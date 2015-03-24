@@ -12,26 +12,26 @@ router.get('/', function (req, res, next) {
 /* POST csv users listing. */
 router.post('/', function (req, res, next) {
   if (req.files && req.files.csvFile) { 
+    var filePath = req.files.csvFile.path;
     if (req.files.csvFile.extension === 'csv') {
-      var fileName = req.files.csvFile.name,
-      filePath = req.files.csvFile.path;
+      var fileName = req.files.csvFile.name;
       
       fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
-        if (err) res.status(400).send('Error processing file');
+        if (err) res.status(400).render('error', { message: 'Error processing file', error: err });
         else {
           csv.parse(data, {comment: '//', delimiter: ';', rowDelimiter: '\n'}, function (err, output) {
-            if (err) res.status(400).send('Error parsing CSV file. Check file syntax before trying again');
+            if (err) res.status(400).render('error', { message: 'Error parsing CSV file. Check file syntax before trying again', error: err });
             else {
               var transformedData = transformData(output); 
               csv.stringify(transformedData, {}, function (err, output) {
-                if (err) res.status(400).send('The CSV file seemed fine, but data transformation failed. Check file formatting or contact the developer');
+                if (err) res.status(400).render('error', { message: 'The CSV file seemed fine, but data transformation failed. Check file formatting or contact the developer', error: err });
                 else {
                   var resultFilePath,
                     path = filePath.split('\\');
                   path[1] = 'result_'+path[1];
                   resultFilePath = path.join('//');
                   fs.writeFile(resultFilePath, output, function (err) {
-                    if (err) res.status(400).send('Error writing results file. This is embarassing.');
+                    if (err) res.status(400).render('error', { message: 'Error writing results file. This is embarassing.', error: err });
                     else {
                       res.status(200).download(resultFilePath, 'result.csv');
                       fs.unlinkSync(filePath);
@@ -43,9 +43,11 @@ router.post('/', function (req, res, next) {
           });
         }
       });
-    } 
-    else res.status(400).send('Wrong file type! Only CSV files are accepted.');
-  } else res.status(400).send('No file was sent.');
+    } else {
+      res.status(400).render('error', { message: 'Wrong file type! Only CSV files are accepted.', error: { status: 400 } });
+      fs.unlinkSync(filePath);
+    }
+  } else res.status(400).render('error', { message: 'No file was sent.', error: { status: 400 } });
 });
 
 function transformData(array) {
