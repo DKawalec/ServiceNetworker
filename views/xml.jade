@@ -1,0 +1,11 @@
+extends layout
+
+block content
+
+  h1 XML file upload
+  p Only XML files supported. Make sure your file is valid or else there will be errors :)
+  form(action='/xmlupload' enctype='multipart/form-data' method='POST')
+    label(for='xmlFile') Choose file to upload: 
+    input(type='file' name='xmlFile' multiple)
+    button Send file
+  div

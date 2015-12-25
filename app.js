@@ -11,6 +11,7 @@ var multer = require('multer');
 
 var routes = require('./routes/index');
 var csvupload = require('./routes/csvupload');
+var xmlupload = require('./routes/xmlupload');
 
 var app = express();
 
@@ -25,10 +26,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(multer({ dest: './csvupload/'}))
+app.use(multer({ dest: './upload/'}))
 
 app.use('/', routes);
 app.use('/csvupload', csvupload);
+app.use('/xmlupload', xmlupload);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
