@@ -1,8 +1,42 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+	box-sizing: border-box;
+}
+html, body {
+	height: 100%;
+}
+header, footer {
+	background-color: #000;
+}
+header > h2, footer > p {
+	color: #777;
+}
+
+form {
+	margin-bottom: 30px;
+	color: #444;
+}
+form button {
+	margin-top: 10px;
+}
+form label, form input {
+	color: #555;
+}
+form.pure-form legend {
+	border-bottom: 1px solid #bbb;
 }
 
 a {
-  color: #00B7FF;
+	color: #0078e7;
+}
+
+.center {
+	text-align: center;
+}
+.panel {
+	padding: 15px 0 0 15px;
+	background-color: #DDD;
+}
+
+#main {
+	height: 100%;
 }

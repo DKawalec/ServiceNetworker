@@ -1,0 +1,55 @@
+extends layout
+
+block content
+
+  #main.pure-g
+    header.pure-u-1-1.center
+      h2 Welcome to #{title}
+    #left.pure-u-1-5.panel
+      form.pure-form.pure-form-stacked(action='/xmlupload' enctype='multipart/form-data' method='POST')
+        fieldset
+          legend Upload XML file(s):
+          label(for='xmlFile') Multiple files can be selected.
+          input.pure-input-3-4(type='file' name='xmlFile' multiple required)
+          label.pure-checkbox(for='archive').
+            #[input(name='archive' type='checkbox')]
+            Save service data
+          label(for='archiveName') Save as...
+          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as')
+          button.pure-button.pure-button-primary(type='submit') START UPLOAD
+      form.pure-form.pure-form-stacked(action='/csvupload' enctype='multipart/form-data' method='POST')
+        fieldset
+          legend Upload CSV file(s):
+          input.pure-input-3-4(type='file' name='csvFile' multiple)
+          label.pure-checkbox(for='archive').
+            #[input(name='archive' type='checkbox')]
+            Save service data
+          label(for='archiveName') Save as...
+          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as')
+          button.pure-button.pure-button-primary(type='submit') START UPLOAD
+    #center.pure-u-3-5
+    #right.pure-u-1-5.panel
+      h3 Some stats
+      table.pure-table
+        tbody
+          tr.pure-table-odd
+            td Number of services
+            td 10
+          tr
+            td Inputs average
+            td 2
+          tr.pure-table-odd
+            td Outputs average
+            td 1
+          tr
+            td Connections average
+            td 5
+          tr.pure-table-odd
+            td Total connections
+            td 100
+    footer.pure-u-1-1.center
+      p.
+        (c) 2015-2016 Dorota Kawalec
+        #[a(href='mailto:179317@student.pwr.wroc.pl') 179317@student.pwr.wroc.pl]
+        W-08 Wydział Informatyki i Zarządzania Politechnika Wrocławska
+  
