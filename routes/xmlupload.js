@@ -41,7 +41,7 @@ router.post('/', function (req, res, next) {
 
       q.all(promises).then(function(result) {
 
-        res.status(200).send({graph: { nodes: cleanDataset(flattenJSONs(aggregateJSONs(result))) } });
+        res.status(200).send({graph: { nodes: flattenJSONs(cleanDataset(aggregateJSONs(result))) } });
       }, function (error) {
         res.status(400).render('error', { message: 'Error processing file #' + (i+1), error: err });
       });
@@ -62,6 +62,19 @@ function aggregateJSONs(jsons) {
   return result;
 }
 
+function cleanDataset(arr) {
+  var noControls = arr.filter(function(e) {
+      return !(e.nodeType[0] === 'Control' && e.controlType[0] === '#start' || e.controlType[0] === '#end');
+    }),
+    usedIds = [];
+
+  return noControls.filter(function(e) {
+    var result = usedIds.indexOf(e.nodeId[0]) === -1;
+    if (result) usedIds.push(e.nodeId[0]);
+    return result;
+  });
+}
+
 function flattenJSONs(jsons) {
   jsons.forEach(function(e, i, a) {
     if (e instanceof Array) {
@@ -71,19 +84,21 @@ function flattenJSONs(jsons) {
     else if (e instanceof Object) {
       for (var j in e) if (e.hasOwnProperty(j)) {
         if (e[j] instanceof Array) {
-          if (e[j].length === 1) a[i][j] = flattenJSONs(e[j])[0];
+          if (e[j].length === 1) {
+            var el = e[j][0];
+            if (el instanceof Object && Object.keys(el).length === 1) {
+              var propNames = [j.substring(0, j.length-1), j.substring(0, j.length-2)];
+              if (el.hasOwnProperty(propNames[0])) a[i][j] = flattenJSONs(el[propNames[0]]);
+              else if (el.hasOwnProperty(propNames[1])) a[i][j] = flattenJSONs(el[propNames[1]]);
+            }   
+            else a[i][j] = flattenJSONs(e[j])[0];
+          }
           else a[i][j] = flattenJSONs(e[j]);
-        }   
+        }
       }
     }
   });
   return jsons;
-}
-
-function cleanDataset(arr) {
-  return arr.filter(function(e) {
-    return !(e.nodeType === 'Control' && e.controlType === '#start' || e.controlType === '#end');
-  });
 }
 
 module.exports = router;
