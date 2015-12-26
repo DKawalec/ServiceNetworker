@@ -2,39 +2,40 @@ extends layout
 
 block content
 
-  #main.pure-g
+  #main.pure-g(ng-controller='NoSViewController')
     header.pure-u-1-1.center
       h2 Welcome to #{title}
     #left.pure-u-1-5.panel
-      form.pure-form.pure-form-stacked(action='/xmlupload' enctype='multipart/form-data' method='POST')
+      form.pure-form.pure-form-stacked(data-ng-submit='uploadXML()' enctype='multipart/form-data')
         fieldset
           legend Upload XML file(s):
           label(for='xmlFile') Multiple files can be selected.
-          input.pure-input-3-4(type='file' name='xmlFile' multiple required)
+          input.pure-input-3-4(type='file' id='xmlFile' name='xmlFile' multiple required)
           label.pure-checkbox(for='archive').
-            #[input(name='archive' type='checkbox')]
+            #[input(name='archive' type='checkbox' ng-model='xmlData.archive')]
             Save service data
           label(for='archiveName') Save as...
-          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as')
+          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='xmlData.archiveName')
           button.pure-button.pure-button-primary(type='submit') START UPLOAD
-      form.pure-form.pure-form-stacked(action='/csvupload' enctype='multipart/form-data' method='POST')
+      form.pure-form.pure-form-stacked(data-ng-submit='uploadCSV()' enctype='multipart/form-data')
         fieldset
           legend Upload CSV file(s):
-          input.pure-input-3-4(type='file' name='csvFile' multiple)
+          input.pure-input-3-4(type='file' id='csvFile' name='csvFile')
           label.pure-checkbox(for='archive').
-            #[input(name='archive' type='checkbox')]
+            #[input(name='archive' type='checkbox' ng-model='csvData.archive')]
             Save service data
           label(for='archiveName') Save as...
-          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as')
+          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='csvData.archiveName')
           button.pure-button.pure-button-primary(type='submit') START UPLOAD
     #center.pure-u-3-5
     #right.pure-u-1-5.panel
-      h3 Some stats
+      h3 Statistics
+      p Load XML with service data to view
       table.pure-table
         tbody
           tr.pure-table-odd
             td Number of services
-            td 10
+            td {{stats.numberOfServices || '-'}}
           tr
             td Inputs average
             td 2
@@ -47,6 +48,8 @@ block content
           tr.pure-table-odd
             td Total connections
             td 100
+      h3 Run algorithm
+      p Cool stuff happens here... SOON
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec
