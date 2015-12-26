@@ -2,12 +2,12 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.xmlData = {};
   $scope.csvData = {};
 
-  $scope.nos = {};
+  $scope.nos = undefined;
 
   $scope.stats = {};
 
   function calculateStats() {
-    var nodes = $scope.nos.graph.nodes,
+    var nodes = $scope.nos,
       inputs = Array.concat.apply([], nodes.map(function(e) {
         return e.functionalDescription.inputs;
       })),
@@ -34,7 +34,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.xmlData.files = document.querySelectorAll('#xmlFile')[0].files;
     FilesService.uploadXML($scope.xmlData)
     .then(function(response) {
-      $scope.nos = response.data;
+      $scope.nos = response.data.graph.nodes;
       calculateStats();
     }).catch(function(error) {
       console.log(error);
