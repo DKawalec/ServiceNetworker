@@ -37,17 +37,23 @@ block content
             td Number of services
             td {{stats.numberOfServices || '-'}}
           tr
+            td Total inputs
+            td {{stats.inputsTotal || '-'}}
+          tr.pure-table-odd
             td Inputs average
-            td 2
+            td {{stats.inputsAverage || '-'}}
+          tr
+            td Total outputs
+            td {{stats.outputsTotal || '-'}}
           tr.pure-table-odd
             td Outputs average
-            td 1
+            td {{stats.outputsAverage || '-'}}
           tr
-            td Connections average
-            td 5
-          tr.pure-table-odd
             td Total connections
-            td 100
+            td {{stats.connectionsTotal || '-'}}
+          tr.pure-table-odd
+            td Connections average
+            td {{stats.connectionsAverage || '-'}}
       h3 Run algorithm
       p Cool stuff happens here... SOON
     footer.pure-u-1-1.center

@@ -7,7 +7,27 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.stats = {};
 
   function calculateStats() {
-    $scope.stats.numberOfServices = $scope.nos.graph.nodes.length;
+    var nodes = $scope.nos.graph.nodes,
+      inputs = Array.concat.apply([], nodes.map(function(e) {
+        return e.functionalDescription.inputs;
+      })),
+      outputs = Array.concat.apply([], nodes.map(function(e) {
+        return e.functionalDescription.outputs;
+      })),
+      connections = 0;
+    inputs.forEach(function(e) {
+      connections += outputs.filter(function(f) {
+        return f.dataType === e.dataType;
+      }).length;
+    });
+
+    $scope.stats.numberOfServices = nodes.length;
+    $scope.stats.inputsTotal = inputs.length;
+    $scope.stats.inputsAverage = inputs.length/nodes.length;
+    $scope.stats.outputsTotal = outputs.length;
+    $scope.stats.outputsAverage = outputs.length/nodes.length;
+    $scope.stats.connectionsTotal = connections;
+    $scope.stats.connectionsAverage = connections/nodes.length;
   }
 
   $scope.uploadXML = function() {
