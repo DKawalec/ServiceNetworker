@@ -17,7 +17,7 @@ block content
           label(for='archiveName') Save as...
           input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='xmlData.archiveName')
           button.pure-button.pure-button-primary(type='submit') START UPLOAD
-      form.pure-form.pure-form-stacked(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos')
+      form.pure-form.pure-form-stacked(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes && false')
         fieldset
           legend Upload CSV file(s):
           input.pure-input-3-4(type='file' id='csvFile' name='csvFile')
