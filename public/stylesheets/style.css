@@ -25,6 +25,10 @@ form.pure-form legend {
 	border-bottom: 1px solid #bbb;
 }
 
+table {
+	margin-bottom: 30px;
+}
+
 a {
 	color: #0078e7;
 }

@@ -18,7 +18,7 @@ router.post('/', function (req, res, next) {
         return e.extension === 'xml';
       }) :
       req.files.xmlFile.extension === 'xml' ?
-        [req.files.xmlFile.extension] : [],
+        [req.files.xmlFile] : [],
       promises = [];
     
     if(xmlFiles.length) {

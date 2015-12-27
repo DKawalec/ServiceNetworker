@@ -15,7 +15,7 @@ app.service('FilesService', function($http) {
       });
     };
 
-    this.uploadCSV = function() {
+    this.uploadCSV = function(input) {
       var fd = new FormData();
       for (var i = 0; i < input.files.length; i++) fd.append('csvFile', input.files[i]);
       delete input.files;
