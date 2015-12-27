@@ -10,7 +10,7 @@ router.get('/', function (req, res, next) {
 });
 
 /* POST csv users listing. */
-router.post('/', function (req, res, next) {
+router.post('/convert', function (req, res, next) {
   if (req.files && req.files.csvFile) { 
     var filePath = req.files.csvFile.path;
     if (req.files.csvFile.extension === 'csv') {

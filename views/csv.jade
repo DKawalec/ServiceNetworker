@@ -4,7 +4,7 @@ block content
 
   h1 CSV file upload
   p Only CSV files supported. Expected structure: ';' as value delimiter, /n as row delimiter. Make sure your file is valid or else there will be errors :)
-  form(action='/csvupload' enctype='multipart/form-data' method='POST')
+  form(action='/csvupload/convert' enctype='multipart/form-data' method='POST')
     label(for='csvFile') Choose file to upload: 
     input(type='file' name='csvFile')
     button Send file
