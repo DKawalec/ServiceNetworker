@@ -6,6 +6,7 @@ block content
     header.pure-u-1-1.center
       h2 Welcome to #{title}
     #left.pure-u-1-5.panel
+      h3 File uploads
       form.pure-form.pure-form-stacked(data-ng-submit='uploadXML()' enctype='multipart/form-data')
         fieldset
           legend Upload XML file(s):
@@ -16,21 +17,23 @@ block content
             Save service data
           label(for='archiveName') Save as...
           input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='xmlData.archiveName')
-          button.pure-button.pure-button-primary(type='submit') START UPLOAD
-      form.pure-form.pure-form-stacked(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes && false')
+          button.pure-button.pure-button-primary(type='submit') LOAD DATA
+      form.pure-form.pure-form-stacked(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes')
         fieldset
           legend Upload CSV file(s):
-          input.pure-input-3-4(type='file' id='csvFile' name='csvFile')
+          input.pure-input-3-4(type='file' id='csvFile' name='csvFile' required)
           label.pure-checkbox(for='archive').
             #[input(name='archive' type='checkbox' ng-model='csvData.archive')]
             Save service data
           label(for='archiveName') Save as...
           input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='csvData.archiveName')
-          button.pure-button.pure-button-primary(type='submit') START UPLOAD
+          button.pure-button.pure-button-primary(type='submit') LOAD DATA
+      h3 Run algorithm
+      p Cool stuff happens here... SOON
     #center.pure-u-3-5
       d3-svg(data='nos.graph.nodes', link='nos.graph.connections')
     #right.pure-u-1-5.panel
-      h3 Statistics
+      h3 NoS statistics
       p Load XML with service data to view
       table.pure-table
         tbody
@@ -55,8 +58,22 @@ block content
           tr.pure-table-odd
             td Connections average
             td {{stats.connectionsAverage || '-'}}
-      h3 Run algorithm
-      p Cool stuff happens here... SOON
+      h3 DNoS statistics
+      p Load CSV with service usage data to view
+      table.pure-table
+        tbody
+          tr.pure-table-odd
+            td Number of calls
+            td {{dnos.length || '-'}}
+          tr
+            td Total recorded time
+            td {{stats.totalTime || '-'}}
+          tr.pure-table-odd
+            td Calls to this repository
+            td {{stats.repositoryCalls || '-'}}
+          tr
+            td Usable data percentage
+            td {{stats.usableData || '-'}}
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec

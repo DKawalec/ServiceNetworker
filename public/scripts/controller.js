@@ -5,6 +5,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.nos = {
       graph: {}
   };
+  $scope.dnos = {};
 
   $scope.stats = {};
 
@@ -56,7 +57,8 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.csvData.files = document.querySelectorAll('#csvFile')[0].files;
     FilesService.uploadCSV($scope.csvData)
     .then(function(response) {
-      console.log(response);
+      console.log(response.data);
+      $scope.dnos = response.data;
     }).catch(function(error) {
       console.log(error);
     });
