@@ -36,7 +36,8 @@ app.directive('d3Svg', ['$window', function ($window) {
           //TODO: calculate height responsively
           height = 800,
           centerPoint = { x: width/2, y: height/2},
-          force, links, nodes, nodeCaptions;
+          force, links, nodes, nodeCaptions,
+          onTimeout = false;
 
         svg
           .attr('height', height)
@@ -107,6 +108,11 @@ app.directive('d3Svg', ['$window', function ($window) {
           nodeCaptions
             .attr('x', function(d) { return d.x; })
             .attr('y', function(d) { return d.y; });
+
+          if (!onTimeout) {
+            window.setTimeout(force.stop, 2000);
+            onTimeout = true;
+          }
         }
       };
     }
