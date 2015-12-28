@@ -63,11 +63,11 @@ block content
       table.pure-table
         tbody
           tr.pure-table-odd
-            td Number of calls
-            td {{dnos.length || '-'}}
-          tr
             td Total recorded time
             td {{stats.totalTime || '-'}}
+          tr
+            td Number of calls
+            td {{stats.totalCalls || '-'}}
           tr.pure-table-odd
             td Calls to this repository
             td {{stats.repositoryCalls || '-'}}
