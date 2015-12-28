@@ -6,8 +6,8 @@ block content
     header.pure-u-1-1.center
       h2 Welcome to #{title}
     #left.pure-u-1-5.panel
-      h3 File uploads
-      form.pure-form.pure-form-stacked(data-ng-submit='uploadXML()' enctype='multipart/form-data')
+      h3.noselect.active(ng-model='hideForms' ng-click='hideForms = !hideForms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideForms, rotate90: hideForms}')] File uploads
+      form.pure-form.pure-form-stacked.dynamic(data-ng-submit='uploadXML()' enctype='multipart/form-data' ng-class='{zeroHeight: hideForms}')
         fieldset
           legend Upload XML file(s):
           label(for='xmlFile') Multiple files can be selected.
@@ -18,7 +18,7 @@ block content
           label(for='archiveName') Save as...
           input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='xmlData.archiveName')
           button.pure-button.pure-button-primary(type='submit') LOAD DATA
-      form.pure-form.pure-form-stacked(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes')
+      form.pure-form.pure-form-stacked.dynamic(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes' ng-class='{zeroHeight: hideForms}')
         fieldset
           legend Upload CSV file(s):
           input.pure-input-3-4(type='file' id='csvFile' name='csvFile' required)
@@ -28,8 +28,19 @@ block content
           label(for='archiveName') Save as...
           input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='csvData.archiveName')
           button.pure-button.pure-button-primary(type='submit') LOAD DATA
-      h3 Run algorithm
-      p Cool stuff happens here... SOON
+      h3.noselect.active(ng-model='hideTimeframes' ng-click='hideTimeframes = !hideTimeframes') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideTimeframes, rotate90: hideTimeframes}')] Timeframe selection
+      form.pure-form.pure-form-stacked.dynamic(ng-class='{zeroHeight: hideTimeframes}') 
+        fieldset
+          legend DNoS data can be split into timeframes.
+          label(for='numberOfTimeframes') Number of timeframes:
+          select(name='numberOfTimeframes' ng-model='numberOfTimeframes' ng-options='option for option in availableTimeframes')
+          label(for='selectedTimeframe') Select time start:
+          input.pure-input-3-4(type='range' min='0' max='{{stats.totalTime}}' step='{{stats.timeframeLength}}' ng-model='timeStart')
+          label(for='selectedTimeframe') Select time end:
+          input.pure-input-3-4(type='range' min='0' max='{{stats.totalTime}}' step='{{stats.timeframeLength}}' ng-model='timeEnd')
+          label {{timeEnd - timeStart}}
+      h3.noselect.active(ng-model='hideAlgorithms' ng-click='hideAlgorithms = !hideAlgorithms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideAlgorithms, rotate90: hideAlgorithms}')] Algorithm runner
+      p.dynamic(ng-class='{zeroHeight: hideAlgorithms}') Cool stuff happens here... SOON
     #center.pure-u-3-5
       d3-svg(data='nos.graph.nodes', link='nos.graph.connections')
     #right.pure-u-1-5.panel
@@ -62,9 +73,6 @@ block content
       p Load CSV with service usage data to view
       table.pure-table
         tbody
-          tr.pure-table-odd
-            td Total recorded time
-            td {{stats.totalTime || '-'}}
           tr
             td Number of calls
             td {{stats.totalCalls || '-'}}
@@ -74,6 +82,12 @@ block content
           tr
             td Usable data percentage
             td {{stats.usableData || '-'}}
+          tr.pure-table-odd
+            td Total recorded time
+            td {{(stats.totalTime || '-') + ' [s]'}}
+          tr
+            td Timeframe length
+            td {{(stats.timeframeLength || '-') + ' [s]'}}
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec

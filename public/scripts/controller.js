@@ -11,6 +11,9 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
 
   $scope.stats = {};
 
+  $scope.numberOfTimeframes = 1;
+  $scope.availableTimeframes = [1, 5, 10, 25, 100, 250];
+
   function calculateNoSStats() {
     var nodes = $scope.nos.graph.nodes,
       inputs = Array.concat.apply([], nodes.map(function(e, i) {
@@ -68,7 +71,12 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.stats.totalCalls = $scope.dnos.all.length;
     $scope.stats.repositoryCalls = $scope.dnos.connections.length;
     $scope.stats.usableData = Math.floor($scope.stats.repositoryCalls/$scope.stats.totalCalls * 100) + '%';
-    $scope.stats.totalTime = Math.floor((last-first) / 1000) + ' seconds';
+    $scope.stats.totalTime = Math.floor((last-first) / 1000);
+    $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / $scope.numberOfTimeframes);
+
+    $scope.$watch('numberOfTimeframes', function(newVals, oldVals) {
+      $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / newVals);
+    }, true);
   }
 
   $scope.uploadXML = function() {

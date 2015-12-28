@@ -14,6 +14,7 @@ header > h2, footer > p {
 form {
 	margin-bottom: 30px;
 	color: #444;
+	height: 240px;
 }
 form button {
 	margin-top: 10px;
@@ -39,6 +40,40 @@ a {
 .panel {
 	padding: 15px 0 0 15px;
 	background-color: #DDD;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.active {
+	cursor: pointer;
+}
+.active:hover {
+	background-color: rgba(200,200,200,25);
+}
+
+.rotate90 {
+	transform: rotate(90deg);
+}
+.rotate180 {
+	transform: rotate(180deg);
+}
+
+.dynamic {
+	transition: height 0.25s ease-out,
+				opacity 0.1s ease-in 0.05s;
+}
+.zeroHeight {
+	height: 0;
+	margin: 0;
+	opacity: 0;
+	display: none;
 }
 
 #main {
