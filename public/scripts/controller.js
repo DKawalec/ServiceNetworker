@@ -1,4 +1,8 @@
 app.controller('NoSViewController', ['$scope', '$document', 'FilesService', function($scope, $document, FilesService) {
+  $scope.hideForms = false;
+  $scope.hideTimeframes = true;
+  $scope.hideAlgorithms = true;
+
   $scope.xmlData = {};
   $scope.csvData = {};
 
@@ -6,7 +10,8 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
       graph: {}
   };
   $scope.dnos = {
-    connections: []
+    connections: [],
+    currentConnections: []
   };
 
   $scope.stats = {};
@@ -71,13 +76,40 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.stats.totalCalls = $scope.dnos.all.length;
     $scope.stats.repositoryCalls = $scope.dnos.connections.length;
     $scope.stats.usableData = Math.floor($scope.stats.repositoryCalls/$scope.stats.totalCalls * 100) + '%';
-    $scope.stats.totalTime = Math.floor((last-first) / 1000);
+    $scope.stats.totalTime = (last-first);
     $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / $scope.numberOfTimeframes);
+
+    $scope.first = first;
+    $scope.last = last;
 
     $scope.$watch('numberOfTimeframes', function(newVals, oldVals) {
       $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / newVals);
     }, true);
   }
+
+  $scope.applyTimeframe = function() {
+    var current = $scope.dnos.connections.filter(function(e) {
+        return parseInt(e.startTime, 10) >= $scope.timeStart && parseInt(e.startTime, 10) <= $scope.timeEnd;
+      }),
+      nodeWeights = $scope.nos.nodeIds.map(function(e) {
+        return current.filter(function(f) {
+          return f.nodeId === e;
+        }).length;
+      }),
+      links = Array.concat.apply([], current.map(function(e) {
+        var result = [];
+        e.targets.forEach(function(f) {
+          result.push({ source: $scope.nos.nodeIds.indexOf(e.nodeId), target: $scope.nos.nodeIds.indexOf(f)})
+        });
+        return result;
+      })).filter(function(e) {
+        return e.target !== -1;
+      });
+    $scope.dnos.currentConnections = {
+      nodeWeights: nodeWeights,
+      links: links
+    };
+  };
 
   $scope.uploadXML = function() {
     $scope.xmlData.files = document.querySelectorAll('#xmlFile')[0].files;
@@ -96,6 +128,8 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     .then(function(response) {
       $scope.dnos.all = response.data;
       calculateDNoSStats();
+      $scope.hideForms = true;
+      $scope.hideTimeframes = false;
     }).catch(function(error) {
       console.log(error);
     });

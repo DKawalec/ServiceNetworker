@@ -31,18 +31,23 @@ block content
       h3.noselect.active(ng-model='hideTimeframes' ng-click='hideTimeframes = !hideTimeframes') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideTimeframes, rotate90: hideTimeframes}')] Timeframe selection
       form.pure-form.pure-form-stacked.dynamic(ng-class='{zeroHeight: hideTimeframes}') 
         fieldset
-          legend DNoS data can be split into timeframes.
-          label(for='numberOfTimeframes') Number of timeframes:
-          select(name='numberOfTimeframes' ng-model='numberOfTimeframes' ng-options='option for option in availableTimeframes')
-          label(for='selectedTimeframe') Select time start:
-          input.pure-input-3-4(type='range' min='0' max='{{stats.totalTime}}' step='{{stats.timeframeLength}}' ng-model='timeStart')
-          label(for='selectedTimeframe') Select time end:
-          input.pure-input-3-4(type='range' min='0' max='{{stats.totalTime}}' step='{{stats.timeframeLength}}' ng-model='timeEnd')
-          label {{timeEnd - timeStart}}
+          .pure-control-group
+            label(for='numberOfTimeframes') Number of timeframes:
+            select(name='numberOfTimeframes' ng-model='numberOfTimeframes' ng-options='option for option in availableTimeframes')
+          .pure-control-group
+            label(for='selectedTimeframe') Time start:
+            input.pure-input-3-4(type='range' min='{{first}}' max='{{last}}' step='{{stats.timeframeLength}}' ng-model='timeStart')
+          .pure-control-group
+            label(for='selectedTimeframe') Time end:
+            input.pure-input-3-4(type='range' min='{{first}}' max='{{last}}' step='{{stats.timeframeLength}}' ng-model='timeEnd')
+          .pure.control-group
+            p.tip If you're experiencing low performance, try working with shorter timeframes or load smaller datasets.
+          .pure-control-group
+            button.pure-button.pure-button-primary(type='button' ng-click='applyTimeframe()') APPLY
       h3.noselect.active(ng-model='hideAlgorithms' ng-click='hideAlgorithms = !hideAlgorithms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideAlgorithms, rotate90: hideAlgorithms}')] Algorithm runner
       p.dynamic(ng-class='{zeroHeight: hideAlgorithms}') Cool stuff happens here... SOON
     #center.pure-u-3-5
-      d3-svg(data='nos.graph.nodes', link='nos.graph.connections')
+      d3-svg(data='nos.graph.nodes', link='nos.graph.connections', timeframe='dnos.currentConnections')
     #right.pure-u-1-5.panel
       h3 NoS statistics
       p Load XML with service data to view
@@ -84,10 +89,10 @@ block content
             td {{stats.usableData || '-'}}
           tr.pure-table-odd
             td Total recorded time
-            td {{(stats.totalTime || '-') + ' [s]'}}
+            td {{(stats.totalTime || '-') + ' [ms]'}}
           tr
             td Timeframe length
-            td {{(stats.timeframeLength || '-') + ' [s]'}}
+            td {{(stats.timeframeLength || '-') + ' [ms]'}}
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec

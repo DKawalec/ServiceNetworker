@@ -3,7 +3,8 @@ app.directive('d3Svg', ['$window', function ($window) {
     restrict: 'E',
     scope: {
       data: '=',
-      link: '='
+      link: '=',
+      timeframe: '='
     },
     link: function(scope, element, attrs) {  
       var svg = d3.select(element[0])
@@ -22,14 +23,17 @@ app.directive('d3Svg', ['$window', function ($window) {
       });
 
       scope.$watch('data', function(newVals, oldVals) {
-        return scope.render(newVals, scope.link);
+        return scope.render(newVals, scope.link, scope.timeframe);
       }, true);
       scope.$watch('link', function(newVals, oldVals) {
-        return scope.render(scope.data, newVals);
+        return scope.render(scope.data, newVals, scope.timeframe);
+      }, true);
+      scope.$watch('timeframe', function(newVals, oldVals) {
+        return scope.render(scope.data, scope.link, newVals);
       }, true);
 
-      scope.render = function(data, links) {
-        // console.log(data, links)
+      scope.render = function(data, links, timeframe) {
+        // console.log(data, links, timeframe)
         svg.selectAll('*').remove();
 
         var width = d3.select(element[0]).node().offsetWidth,
