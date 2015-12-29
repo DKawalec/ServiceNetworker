@@ -1,17 +1,17 @@
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var ipaddress    = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port         = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var multer = require('multer');
+var express      = require('express');
+var path         = require('path');
+var favicon      = require('serve-favicon');
+var logger       = require('morgan');
+var bodyParser   = require('body-parser');
+var multer       = require('multer');
 
-var routes = require('./routes/index');
-var csvupload = require('./routes/csvupload');
-var xmlupload = require('./routes/xmlupload');
+var routes       = require('./routes/index');
+var csvupload    = require('./routes/csvupload');
+var xmlupload    = require('./routes/xmlupload');
+var archive      = require('./routes/archive');
 
 var app = express();
 
@@ -25,13 +25,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 // in latest body-parser use like below.
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(multer({ dest: './upload/'}))
 
 app.use('/', routes);
 app.use('/csvupload', csvupload);
 app.use('/xmlupload', xmlupload);
+app.use('/archive', archive);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

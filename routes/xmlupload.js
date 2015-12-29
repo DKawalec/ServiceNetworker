@@ -47,9 +47,9 @@ router.post('/', function (req, res, next) {
       q.all(promises).then(function(result) {
         var endResult = flattenJSONs(cleanDataset(aggregateJSONs(result)));
         if (save.archive && save.archiveName) fs.writeFile('archive\\nos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
-          res.status(200).send({graph: { nodes: endResult } });
+          res.status(200).json({graph: { nodes: endResult } });
         });
-        else res.status(200).send({graph: { nodes: endResult } });
+        else res.status(200).json({graph: { nodes: endResult } });
       }, function (error) {
         res.status(400).render('error', { message: 'Error processing file #' + (i+1), error: err });
       });
