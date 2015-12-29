@@ -36,10 +36,10 @@ router.post('/', function (req, res, next) {
               if (err) deferred.reject(err);
               else {
                 deferred.resolve(result);
-                fs.unlinkSync(filePath);
               }
             });
           }
+          fs.unlinkSync(filePath);
         });
 
       });

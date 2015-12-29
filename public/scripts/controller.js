@@ -11,7 +11,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   };
   $scope.dnos = {
     connections: [],
-    currentConnections: []
+    currentConnections: undefined
   };
 
   $scope.stats = {};
@@ -34,6 +34,26 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   }, function(error) {
     console.log(error);
   });
+
+  function duplicateRemover(arrayOfObjects) {
+    var uniques = [];
+
+    function isSame(obj1, obj2) {
+      if (Object.keys(obj1).length !== Object.keys(obj2).length) return false;
+      for (var i in obj1) if (obj1.hasOwnProperty(i)) if (obj1[i] !== obj2[i]) return false;
+      return true;
+    }
+
+    return arrayOfObjects.filter(function(e) {
+      var exists = false;
+
+      for (var i = 0; i < uniques.length && !exists; i++)
+        if (isSame(e, uniques[i])) exists = true;
+        
+      if (!exists) uniques.push(e);
+      return !exists;
+    });
+  }
 
   function calculateNoSStats() {
     var nodes = $scope.nos.graph.nodes,
@@ -112,6 +132,9 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
           return f.nodeId === e;
         }).length;
       }),
+      totalWeight = nodeWeights.reduce(function(a, b) {
+        return a + b;
+      }),
       links = Array.concat.apply([], current.map(function(e) {
         var result = [];
         e.targets.forEach(function(f) {
@@ -123,7 +146,8 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
       });
     $scope.dnos.currentConnections = {
       nodeWeights: nodeWeights,
-      links: links
+      totalWeight: totalWeight,
+      links: duplicateRemover(links)
     };
   };
 

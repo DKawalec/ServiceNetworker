@@ -33,14 +33,14 @@ app.directive('d3Svg', ['$window', function ($window) {
       }, true);
 
       scope.render = function(data, links, timeframe) {
-        // console.log(data, links, timeframe)
+        if(timeframe) console.log(timeframe.links.length)
         svg.selectAll('*').remove();
 
         var width = d3.select(element[0]).node().offsetWidth,
           //TODO: calculate height responsively
           height = 800,
           centerPoint = { x: width/2, y: height/2},
-          force, links, nodes, nodeCaptions,
+          force, lines, nodes, nodeCaptions,
           onTimeout = false;
 
         svg
@@ -62,7 +62,7 @@ app.directive('d3Svg', ['$window', function ($window) {
 
         force = d3.layout.force()
           .nodes(data)
-          .links(links)
+          .links(timeframe ? timeframe.links : links)
           .size([width*.8,height*0.8])
           .linkStrength(0.1)
           .friction(0.9)
@@ -73,8 +73,8 @@ app.directive('d3Svg', ['$window', function ($window) {
           .alpha(0.1)
           .start();
 
-        links = svg.selectAll('line')
-          .data(links)
+        lines = svg.selectAll('line')
+          .data(timeframe ? timeframe.links : links)
           .enter().append('line')
           .attr('stroke', '#777')
           .attr('x1', function(d) { return d.source.x; })
@@ -85,8 +85,8 @@ app.directive('d3Svg', ['$window', function ($window) {
         nodes = svg.selectAll('circle')
           .data(data).enter()
           .append('circle')
-          .attr('r', 20)
-          .attr('fill', '#0078e7');
+          .attr('r', sizer)
+          .attr('fill', colorizer);
 
         nodeCaptions = svg.selectAll('text')
           .data(data).enter()
@@ -99,7 +99,7 @@ app.directive('d3Svg', ['$window', function ($window) {
         force.on('tick', tick);
 
         function tick() {
-          links
+          lines
             .attr('x1', function(d) { return d.source.x; })
             .attr('y1', function(d) { return d.source.y; })
             .attr('x2', function(d) { return d.target.x; })
@@ -114,9 +114,26 @@ app.directive('d3Svg', ['$window', function ($window) {
             .attr('y', function(d) { return d.y; });
 
           if (!onTimeout) {
-            window.setTimeout(force.stop, 2000);
+            // window.setTimeout(force.stop, 2000);
             onTimeout = true;
           }
+        }
+
+        function sizer(d, i) {
+          var multiplier = timeframe ? 
+            timeframe.nodeWeights[i] === 0 ? 0 :
+              1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;
+
+          return 20 * multiplier;
+        }
+
+        function colorizer(d, i) {
+          var color = d3.scale.linear()
+              .domain([0, 2])
+              .range(['#98C4ED', '#0078e7']),
+            value = timeframe ? 1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;
+          
+          return color(value);
         }
       };
     }
