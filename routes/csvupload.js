@@ -90,6 +90,7 @@ function parseChunk(chunk) {
 
 /* POST csv users listing to get JSON usage data. */
 router.post('/', function (req, res, next) {
+  var save = JSON.parse(req.body.data);
   if (req.files && req.files.csvFile) { 
     var filePath = req.files.csvFile.path;
     if (req.files.csvFile.extension === 'csv') {
@@ -101,7 +102,11 @@ router.post('/', function (req, res, next) {
           csv.parse(data, {comment: '//', delimiter: ';', rowDelimiter: '\n'}, function (err, output) {
             if (err) res.status(400).render('error', { message: 'Error parsing CSV file. Check file syntax before trying again', error: err });
             else {
-              res.status(200).json(extractData(output));
+              var endResult = extractData(output);
+              if (save.archive && save.archiveName) fs.writeFile('archive\\dnos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
+                res.status(200).json(endResult);
+              });
+              else res.status(200).json(endResult);
               fs.unlinkSync(filePath);
             }
           });

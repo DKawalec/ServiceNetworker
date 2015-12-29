@@ -12,6 +12,7 @@ router.get('/', function (req, res, next) {
 
 /* POST xml service description. */
 router.post('/', function (req, res, next) {
+  var save = JSON.parse(req.body.data);
   if (req.files && req.files.xmlFile) { 
     var xmlFiles = req.files.xmlFile instanceof Array ?
       req.files.xmlFile.filter(function(e) {
@@ -33,17 +34,22 @@ router.post('/', function (req, res, next) {
             var parser = new xml2js.Parser();
             parser.parseString(data, function (err, result) {
               if (err) deferred.reject(err);
-              else deferred.resolve(result);
+              else {
+                deferred.resolve(result);
+                fs.unlinkSync(filePath);
+              }
             });
           }
         });
 
-        fs.unlinkSync(filePath);
       });
 
       q.all(promises).then(function(result) {
-
-        res.status(200).send({graph: { nodes: flattenJSONs(cleanDataset(aggregateJSONs(result))) } });
+        var endResult = flattenJSONs(cleanDataset(aggregateJSONs(result)));
+        if (save.archive && save.archiveName) fs.writeFile('archive\\nos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
+          res.status(200).send({graph: { nodes: endResult } });
+        });
+        else res.status(200).send({graph: { nodes: endResult } });
       }, function (error) {
         res.status(400).render('error', { message: 'Error processing file #' + (i+1), error: err });
       });

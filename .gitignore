@@ -20,5 +20,6 @@ node_modules
 # Files storage
 csvupload
 upload
+archive
 # Users Environment Variables
 .lock-wscript
