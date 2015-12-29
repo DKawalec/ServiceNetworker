@@ -14,16 +14,22 @@ header > h2, footer > p {
 form {
 	margin-bottom: 30px;
 	color: #444;
-	height: 240px;
+	height: 220px;
 }
 form button {
 	margin-top: 10px;
+	float: right!important;
+	margin-right: 30px;
 }
 form label, form input {
 	color: #555;
 }
 form.pure-form legend {
 	border-bottom: 1px solid #bbb;
+}
+
+form.pure-form.pure-form-aligned div.pure-control-group > label {
+	width: 7em;
 }
 
 table {
@@ -40,6 +46,17 @@ a {
 .panel {
 	padding: 15px 0 0 15px;
 	background-color: #DDD;
+}
+
+.tip {
+	font-size: 12px;
+	margin: 20px;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align: center;
+	border-radius: 3px;
+	border: 1px solid #BFCFDE;
+	background-color: #D3E2F0;
 }
 
 .noselect {

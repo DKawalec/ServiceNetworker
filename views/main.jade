@@ -7,29 +7,36 @@ block content
       h2 Welcome to #{title}
     #left.pure-u-1-5.panel
       h3.noselect.active(ng-model='hideForms' ng-click='hideForms = !hideForms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideForms, rotate90: hideForms}')] File uploads
-      form.pure-form.pure-form-stacked.dynamic(data-ng-submit='uploadXML()' enctype='multipart/form-data' ng-class='{zeroHeight: hideForms}')
+      form.pure-form.pure-form-aligned.dynamic(data-ng-submit='uploadXML()' enctype='multipart/form-data' ng-class='{zeroHeight: hideForms}')
         fieldset
           legend Upload XML file(s):
-          label(for='xmlFile') Multiple files can be selected.
-          input.pure-input-3-4(type='file' id='xmlFile' name='xmlFile' multiple required)
-          label.pure-checkbox(for='archive').
-            #[input(name='archive' type='checkbox' ng-model='xmlData.archive')]
-            Save service data
-          label(for='archiveName') Save as...
-          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='xmlData.archiveName')
-          button.pure-button.pure-button-primary(type='submit') LOAD DATA
-      form.pure-form.pure-form-stacked.dynamic(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes' ng-class='{zeroHeight: hideForms}')
+          .pure-control-group
+            input.pure-input-3-4(type='file' id='xmlFile' name='xmlFile' multiple required)
+          .pure-control-group
+            label.pure-checkbox(for='archive').
+              #[input(name='archive' type='checkbox' ng-model='xmlData.archive')]
+              Save data
+            input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='xmlData.archiveName')
+          .pure.control-group
+            p.tip Choose to save data for easy access to the same NoS in the future.
+          .pure-control-group
+            button.pure-button.pure-input-2-3.pure-button-primary(type='submit') LOAD DATA
+      form.pure-form.pure-form-aligned.dynamic(data-ng-submit='uploadCSV()' enctype='multipart/form-data' ng-show='nos.graph.nodes' ng-class='{zeroHeight: hideForms}')
         fieldset
-          legend Upload CSV file(s):
-          input.pure-input-3-4(type='file' id='csvFile' name='csvFile' required)
-          label.pure-checkbox(for='archive').
-            #[input(name='archive' type='checkbox' ng-model='csvData.archive')]
-            Save service data
-          label(for='archiveName') Save as...
-          input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='csvData.archiveName')
-          button.pure-button.pure-button-primary(type='submit') LOAD DATA
+          legend Upload a single CSV file:
+          .pure-control-group
+            input.pure-input-3-4(type='file' id='csvFile' name='csvFile' required)
+          .pure-control-group
+            label.pure-checkbox(for='archive').
+              #[input(name='archive' type='checkbox' ng-model='csvData.archive')]
+              Save data        
+            input.pure-input-3-4(name='archiveName' type='text' placeholder='Name to save data as' ng-model='csvData.archiveName')
+          .pure.control-group
+            p.tip Only records that can be mapped to the current NoS will be displayed. Unknown node data will be ignored.
+          .pure-control-group
+            button.pure-button.pure-input-2-3.pure-button-primary(type='submit') LOAD DATA
       h3.noselect.active(ng-model='hideTimeframes' ng-click='hideTimeframes = !hideTimeframes') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideTimeframes, rotate90: hideTimeframes}')] Timeframe selection
-      form.pure-form.pure-form-stacked.dynamic(ng-class='{zeroHeight: hideTimeframes}') 
+      form.pure-form.pure-form-aligned.dynamic(ng-class='{zeroHeight: hideTimeframes}') 
         fieldset
           .pure-control-group
             label(for='numberOfTimeframes') Number of timeframes:
@@ -43,7 +50,7 @@ block content
           .pure.control-group
             p.tip If you're experiencing low performance, try working with shorter timeframes or load smaller datasets.
           .pure-control-group
-            button.pure-button.pure-button-primary(type='button' ng-click='applyTimeframe()') APPLY
+            button.pure-button.pure-input-2-3.pure-button-primary(type='button' ng-click='applyTimeframe()') APPLY
       h3.noselect.active(ng-model='hideAlgorithms' ng-click='hideAlgorithms = !hideAlgorithms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideAlgorithms, rotate90: hideAlgorithms}')] Algorithm runner
       p.dynamic(ng-class='{zeroHeight: hideAlgorithms}') Cool stuff happens here... SOON
     #center.pure-u-3-5
