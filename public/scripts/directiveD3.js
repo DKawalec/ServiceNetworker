@@ -33,9 +33,7 @@ app.directive('d3Svg', ['$window', function ($window) {
       }, true);
 
       scope.render = function(data, links, timeframe) {
-        if(timeframe) console.log(timeframe.links.length)
         svg.selectAll('*').remove();
-
         var width = d3.select(element[0]).node().offsetWidth,
           //TODO: calculate height responsively
           height = 800,
@@ -67,7 +65,7 @@ app.directive('d3Svg', ['$window', function ($window) {
           .linkStrength(0.1)
           .friction(0.9)
           .linkDistance(200)
-          .charge(-30)
+          .charge(-99)
           .gravity(0.1)
           .theta(0.8)
           .alpha(0.1)
@@ -76,7 +74,7 @@ app.directive('d3Svg', ['$window', function ($window) {
         lines = svg.selectAll('line')
           .data(timeframe ? timeframe.links : links)
           .enter().append('line')
-          .attr('stroke', '#777')
+          .attr('stroke', linkColorizer)
           .attr('x1', function(d) { return d.source.x; })
           .attr('y1', function(d) { return d.source.y; })
           .attr('x2', function(d) { return d.target.x; })
@@ -132,6 +130,15 @@ app.directive('d3Svg', ['$window', function ($window) {
               .domain([0, 2])
               .range(['#98C4ED', '#0078e7']),
             value = timeframe ? 1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;
+          
+          return color(value);
+        }
+
+        function linkColorizer(d, i) {
+          var color = d3.scale.linear()
+              .domain([0, 0.5])
+              .range(['#BBBBBB', '#000']),
+            value = timeframe ? (timeframe.linkWeights[i] / timeframe.linksTotal) : 0.25;
           
           return color(value);
         }
