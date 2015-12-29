@@ -122,7 +122,6 @@ function extractData(array) {
     var numberOfInputs = parseInt(e[2]),
       numberOfOutputs = parseInt(e[3+numberOfInputs]),
       offsetTotal = numberOfInputs+numberOfOutputs;
-      if (i<10) console.log(e, i, ' --- ', numberOfInputs, numberOfOutputs, offsetTotal)
     return {
       nodeId: e[0],
       startTime: e[1],

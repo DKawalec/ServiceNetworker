@@ -37,6 +37,8 @@ router.post('/', function (req, res, next) {
             });
           }
         });
+
+        fs.unlinkSync(filePath);
       });
 
       q.all(promises).then(function(result) {
