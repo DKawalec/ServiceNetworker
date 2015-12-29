@@ -19,6 +19,22 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.numberOfTimeframes = 1;
   $scope.availableTimeframes = [1, 5, 10, 25, 100, 250];
 
+  FilesService.getNoSArchive().then(function(response) {
+    $scope.availableNoS = response.data.map(function(e) {
+      return e.split('.')[0];
+    });
+  }, function(error) {
+    console.log(error);
+  });
+
+  FilesService.getDNoSArchive().then(function(response) {
+    $scope.availableDNoS = response.data.map(function(e) {
+      return e.split('.')[0];
+    });
+  }, function(error) {
+    console.log(error);
+  });
+
   function calculateNoSStats() {
     var nodes = $scope.nos.graph.nodes,
       inputs = Array.concat.apply([], nodes.map(function(e, i) {
@@ -129,9 +145,32 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
       $scope.dnos.all = response.data;
       calculateDNoSStats();
       $scope.hideForms = true;
+      $scope.hideArchives = true;
       $scope.hideTimeframes = false;
     }).catch(function(error) {
       console.log(error);
     });
   };
+
+  $scope.loadNoS = function() {
+    FilesService.getNoS($scope.nosArchiveSelection)
+    .then(function(response) {
+      $scope.nos = response.data;
+      calculateNoSStats();
+    }).catch(function(error) {
+      console.log(error);
+    });
+  }
+  $scope.loadDNoS = function() {
+    FilesService.getDNoS($scope.dnosArchivesSelection)
+    .then(function(response) {
+      $scope.dnos.all = response.data;
+      calculateDNoSStats();
+      $scope.hideForms = true;
+      $scope.hideArchives = true;
+      $scope.hideTimeframes = false;
+    }).catch(function(error) {
+      console.log(error);
+    });
+  }
 }]);

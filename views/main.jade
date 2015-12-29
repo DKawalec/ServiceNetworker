@@ -35,6 +35,21 @@ block content
             p.tip Only records that can be mapped to the current NoS will be displayed. Unknown node data will be ignored.
           .pure-control-group
             button.pure-button.pure-input-2-3.pure-button-primary(type='submit') LOAD DATA
+      h3.noselect.active(ng-model='hideArchives' ng-click='hideArchives = !hideArchives') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideArchives, rotate90: hideArchives}')] Archived data
+      form.miniform.pure-form.pure-form-aligned.dynamic(data-ng-submit='loadNoS()' ng-class='{zeroHeight: hideArchives}')
+        fieldset
+          legend NoS archives:
+          .pure-control-group
+            select(ng-model='nosArchiveSelection' ng-options='option for option in availableNoS')
+          .pure-control-group
+            button.pure-button.pure-input-2-3.pure-button-primary(type='submit') LOAD DATA
+      form.miniform.pure-form.pure-form-aligned.dynamic(data-ng-submit='loadDNoS()' ng-show='nos.graph.nodes' ng-class='{zeroHeight: hideArchives}')
+        fieldset
+          legend NoS archives:
+          .pure-control-group
+            select(ng-model='dnosArchivesSelection' ng-options='option for option in availableDNoS')
+          .pure-control-group
+            button.pure-button.pure-input-2-3.pure-button-primary(type='submit') LOAD DATA
       h3.noselect.active(ng-model='hideTimeframes' ng-click='hideTimeframes = !hideTimeframes') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideTimeframes, rotate90: hideTimeframes}')] Timeframe selection
       form.pure-form.pure-form-aligned.dynamic(ng-class='{zeroHeight: hideTimeframes}') 
         fieldset

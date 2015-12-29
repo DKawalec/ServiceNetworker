@@ -16,6 +16,9 @@ form {
 	color: #444;
 	height: 220px;
 }
+form.miniform {
+	height: 120px;	
+}
 form button {
 	margin-top: 10px;
 	float: right!important;
