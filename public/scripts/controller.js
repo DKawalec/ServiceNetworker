@@ -95,8 +95,8 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.stats.totalTime = (last-first);
     $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / $scope.numberOfTimeframes);
 
-    $scope.first = first;
-    $scope.last = last;
+    $scope.timeStart = $scope.first = first;
+    $scope.timeEnd = $scope.last = last;
 
     $scope.$watch('numberOfTimeframes', function(newVals, oldVals) {
       $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / newVals);
