@@ -103,7 +103,7 @@ router.post('/', function (req, res, next) {
             if (err) res.status(400).render('error', { message: 'Error parsing CSV file. Check file syntax before trying again', error: err });
             else {
               var endResult = extractData(output);
-              if (save.archive && save.archiveName) fs.writeFile('archive\\dnos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
+              if (save.archive && save.archiveName) fs.writeFile((process.env.OPENSHIFT_DATA_DIR || 'archive') + '\\dnos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
                 res.status(200).json(endResult);
               });
               else res.status(200).json(endResult);
