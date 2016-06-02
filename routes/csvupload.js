@@ -1,8 +1,8 @@
-var app = require('express');
+var app    = require('express');
 // var path = require('path');
 var router = app.Router();
-var csv = require('csv');
-var fs = require('fs');
+var csv    = require('csv');
+var fs     = require('fs');
 
 /* GET csv handling site. */
 router.get('/', function (req, res, next) {
@@ -132,7 +132,7 @@ function extractData(array) {
       startTime: e[1],
       sources: e.slice(3, 3+numberOfInputs),
       targets: e.slice(4+numberOfInputs, 4+offsetTotal),
-      duration: e[4+offsetTotal] + e[5+offsetTotal]
+      duration: parseInt(e[4+offsetTotal], 10) + parseInt(e[5+offsetTotal], 10)
     };
   });
 }
