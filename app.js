@@ -14,6 +14,8 @@ var csvupload    = require('./routes/csvupload');
 var xmlupload    = require('./routes/xmlupload');
 var archive      = require('./routes/archive');
 
+var compute      = require('./routes/compute');
+
 var app = express();
 
 // view engine setup
@@ -33,6 +35,8 @@ app.use('/', routes);
 app.use('/csvupload', csvupload);
 app.use('/xmlupload', xmlupload);
 app.use('/archive', archive);
+
+app.use('/compute', compute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
