@@ -1,15 +1,29 @@
 var app    = require('express');
 var router = app.Router();
-var common = require('./common-neighbours');
+var cn     = require('./common-neighbours');
+var pa     = require('./preferential-attachment');
+var hp     = require('./hub-promoted');
+var ra     = require('./resource-allocation');
 
-router.use('/cn', common);
+router.use('/cn', cn);
+router.use('/pa', pa);
+router.use('/hp', hp);
+router.use('/ra', ra);
 
 /* GET available algorithms and their urls */
 router.get('/', function (req, res) {
   res.status(200).json([{
     name: 'Common Neighbours',
-    endpoint: '/cn',
-    method: 'POST'
+    endpoint: '/cn'
+  }, {
+    name: 'Preferential Attachment',
+    endpoint: '/pa'
+  }, {
+    name: 'Hub Promoted',
+    endpoint: '/hp'
+  }, {
+    name: 'Resource Allocation',
+    endpoint: '/ra'
   }]);
 });
 
