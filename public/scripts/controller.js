@@ -19,6 +19,8 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.numberOfTimeframes = 1;
   $scope.availableTimeframes = [1, 5, 10, 25, 100, 250];
 
+  $scope.availableAlgorithms = null;
+
   FilesService.getNoSArchive().then(function(response) {
     $scope.availableNoS = response.data.map(function(e) {
       return e.split('.')[0];
@@ -31,6 +33,12 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.availableDNoS = response.data.map(function(e) {
       return e.split('.')[0];
     });
+  }, function(error) {
+    console.log(error);
+  });
+
+  FilesService.getAlgorithms().then(function(response) {
+    $scope.availableAlgorithms = response.data;
   }, function(error) {
     console.log(error);
   });
@@ -206,6 +214,16 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
       $scope.hideForms = true;
       $scope.hideArchives = true;
       $scope.hideTimeframes = false;
+    }).catch(function(error) {
+      console.log(error);
+    });
+  }
+
+  $scope.runComputation = function() {
+    console.log($scope.dnos)
+    FilesService.predict($scope.algorithmSelection.endpoint, $scope.dnos.currentConnections || {})
+    .then(function(response) {
+      console.log(response);
     }).catch(function(error) {
       console.log(error);
     });

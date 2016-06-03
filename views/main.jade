@@ -67,7 +67,13 @@ block content
           .pure-control-group
             button.pure-button.pure-input-2-3.pure-button-primary(type='button' ng-click='applyTimeframe()') APPLY
       h3.noselect.active(ng-model='hideAlgorithms' ng-click='hideAlgorithms = !hideAlgorithms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideAlgorithms, rotate90: hideAlgorithms}')] Algorithm runner
-      p.dynamic(ng-class='{zeroHeight: hideAlgorithms}') Cool stuff happens here... SOON
+      form.miniform.pure-form.pure-form-aligned.dynamic(data-ng-submit='runComputation()' ng-class='{zeroHeight: hideAlgorithms}')
+        fieldset
+          legend Available algorithms:
+          .pure-control-group
+            select(ng-model='algorithmSelection' ng-options='option.name for option in availableAlgorithms')
+          .pure-control-group
+            button.pure-button.pure-input-2-3.pure-button-primary(type='submit') COMPUTE
     #center.pure-u-3-5
       d3-svg(data='nos.graph.nodes', link='nos.graph.connections', timeframe='dnos.currentConnections')
     #right.pure-u-1-5.panel

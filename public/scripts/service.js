@@ -16,6 +16,14 @@ app.service('FilesService', function($http) {
       return $http.get('/archive/dnos/' + name);
     };
 
+    this.getAlgorithms = function() {
+      return $http.get('/compute');
+    };
+
+    this.predict = function(endpoint, data) {
+      return $http.post('/compute' + endpoint, data);
+    };
+
     this.uploadXML = function(input) {
       var fd = new FormData();
       for (var i = 0; i < input.files.length; i++) fd.append('xmlFile', input.files[i]);
