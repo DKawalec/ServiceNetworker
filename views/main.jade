@@ -77,50 +77,61 @@ block content
     #center.pure-u-3-5
       d3-svg(data='nos.graph.nodes', link='nos.graph.connections', timeframe='dnos.currentConnections')
     #right.pure-u-1-5.panel
-      h3 NoS statistics
-      p Load XML with service data to view
-      table.pure-table
-        tbody
-          tr.pure-table-odd
-            td Number of services
-            td {{stats.numberOfServices || '-'}}
-          tr
-            td Total inputs
-            td {{stats.inputsTotal || '-'}}
-          tr.pure-table-odd
-            td Inputs average
-            td {{stats.inputsAverage || '-'}}
-          tr
-            td Total outputs
-            td {{stats.outputsTotal || '-'}}
-          tr.pure-table-odd
-            td Outputs average
-            td {{stats.outputsAverage || '-'}}
-          tr
-            td Total connections
-            td {{stats.connectionsTotal || '-'}}
-          tr.pure-table-odd
-            td Connections average
-            td {{stats.connectionsAverage || '-'}}
-      h3 DNoS statistics
-      p Load CSV with service usage data to view
-      table.pure-table
-        tbody
-          tr
-            td Number of calls
-            td {{stats.totalCalls || '-'}}
-          tr.pure-table-odd
-            td Calls to this repository
-            td {{stats.repositoryCalls || '-'}}
-          tr
-            td Usable data percentage
-            td {{stats.usableData || '-'}}
-          tr.pure-table-odd
-            td Total recorded time
-            td {{(stats.totalTime || '-') + ' [ms]'}}
-          tr
-            td Timeframe length
-            td {{(stats.timeframeLength || '-') + ' [ms]'}}
+      h3 View statistics
+      .pure-menu.pure-menu-horizontal
+        ul.pure-menu-list
+          li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsNoS}' ng-click='showStats("statsNoS")')
+            a.pure-menu-link NoS
+          li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsDNoS}' ng-click='showStats("statsDNoS")')
+            a.pure-menu-link DNoS
+          li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsPrediction}' ng-click='showStats("statsPrediction")')
+            a.pure-menu-link Prediction
+      div(ng-show='statsNoS')
+        p Load XML with service data to view
+        table.pure-table
+          tbody
+            tr.pure-table-odd
+              td Number of services
+              td {{stats.numberOfServices || '-'}}
+            tr
+              td Total inputs
+              td {{stats.inputsTotal || '-'}}
+            tr.pure-table-odd
+              td Inputs average
+              td {{stats.inputsAverage || '-'}}
+            tr
+              td Total outputs
+              td {{stats.outputsTotal || '-'}}
+            tr.pure-table-odd
+              td Outputs average
+              td {{stats.outputsAverage || '-'}}
+            tr
+              td Total connections
+              td {{stats.connectionsTotal || '-'}}
+            tr.pure-table-odd
+              td Connections average
+              td {{stats.connectionsAverage || '-'}}
+      div(ng-show='statsDNoS')
+        p Load CSV with service usage data to view
+        table.pure-table
+          tbody
+            tr
+              td Number of calls
+              td {{stats.totalCalls || '-'}}
+            tr.pure-table-odd
+              td Calls to this repository
+              td {{stats.repositoryCalls || '-'}}
+            tr
+              td Usable data percentage
+              td {{stats.usableData || '-'}}
+            tr.pure-table-odd
+              td Total recorded time
+              td {{(stats.totalTime || '-') + ' [ms]'}}
+            tr
+              td Timeframe length
+              td {{(stats.timeframeLength || '-') + ' [ms]'}}
+      div(ng-show='statsPrediction')
+        p Run algorithm of choice to view
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec

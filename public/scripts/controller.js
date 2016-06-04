@@ -3,6 +3,10 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.hideTimeframes = true;
   $scope.hideAlgorithms = true;
 
+  $scope.statsNoS = true;
+  $scope.statsDNoS = false;
+  $scope.statsPrediction = false;
+
   $scope.xmlData = {};
   $scope.csvData = {};
 
@@ -205,7 +209,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     }).catch(function(error) {
       console.log(error);
     });
-  }
+  };
   $scope.loadDNoS = function() {
     FilesService.getDNoS($scope.dnosArchivesSelection)
     .then(function(response) {
@@ -217,7 +221,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     }).catch(function(error) {
       console.log(error);
     });
-  }
+  };
 
   $scope.runComputation = function() {
     console.log($scope.dnos)
@@ -227,5 +231,12 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     }).catch(function(error) {
       console.log(error);
     });
-  }
+  };
+
+  $scope.showStats = function(toShow) {
+    $scope.statsNoS = false;
+    $scope.statsDNoS = false;
+    $scope.statsPrediction = false;
+    $scope[toShow] = true;
+  };
 }]);
