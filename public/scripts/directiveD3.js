@@ -9,7 +9,8 @@ app.directive('d3Svg', ['$window', function ($window) {
     link: function(scope, element, attrs) {  
       var svg = d3.select(element[0])
       .append('svg')
-      .style('width', '100%');
+      .style('width', '100%')
+      .style('height', '100%');
 
       window.onresize = function() {
         scope.$apply();

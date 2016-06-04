@@ -6,6 +6,7 @@ html, body {
 }
 header, footer {
 	background-color: #000;
+	height: 60px;
 }
 header > h2, footer > p {
 	color: #777;
@@ -98,4 +99,12 @@ a {
 
 #main {
 	height: 100%;
+}
+
+#left, #center, #right {
+	height: calc(100% - 120px);
+}
+
+#left, #right {
+	overflow-y: auto;
 }
