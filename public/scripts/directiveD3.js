@@ -93,7 +93,7 @@ app.directive('d3Svg', ['$window', function ($window) {
           .attr('text-anchor', 'middle')
           .attr('font-size', '10px')
           .attr('fill', '#FFF')
-          .text(function(d) {return d.nodeId});
+          .text(function(d) {return d.nodeLabel || d.nodeId});
 
         force.on('tick', tick);
 
