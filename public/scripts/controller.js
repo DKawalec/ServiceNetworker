@@ -160,7 +160,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
         });
         return result;
       })).filter(function(e) {
-        return e.target !== -1;
+        return e.target !== -1 && e.source !== -1;
       }),
       cleanLinks = duplicateRemover(links);
     $scope.dnos.currentConnections = {
