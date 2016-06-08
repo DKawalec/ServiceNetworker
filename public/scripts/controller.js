@@ -142,9 +142,9 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     }, true);
   }
 
-  $scope.applyTimeframe = function() {
+  function getDnosTimewindow(start, end) {
     var current = $scope.dnos.connections.filter(function(e) {
-        return parseInt(e.startTime, 10) >= $scope.timeStart && parseInt(e.startTime, 10) <= $scope.timeEnd;
+        return parseInt(e.startTime, 10) >= start && parseInt(e.startTime, 10) <= end;
       }),
       nodeWeights = $scope.nos.nodeIds.map(function(e) {
         return current.filter(function(f) {
@@ -164,13 +164,17 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
         return e.target !== -1 && e.source !== -1;
       }),
       cleanLinks = duplicateRemover(links);
-    $scope.dnos.currentConnections = {
+    return {
       nodeWeights: nodeWeights,
       totalWeight: totalWeight,
       links: cleanLinks.values,
       linkWeights: cleanLinks.counter,
       linksTotal: links.length
     };
+  }
+
+  $scope.applyTimeframe = function() {
+    $scope.dnos.currentConnections = getDnosTimewindow($scope.timeStart, $scope.timeEnd)
   };
 
   $scope.uploadXML = function() {
