@@ -39,7 +39,7 @@ app.directive('d3Svg', ['$window', function ($window) {
           //TODO: calculate height responsively
           height = 800,
           centerPoint = { x: width/2, y: height/2},
-          force, lines, nodes, nodeCaptions,
+          force, lines, nodes, nodeCaptions, drag,
           onTimeout = false;
 
         svg
@@ -62,15 +62,18 @@ app.directive('d3Svg', ['$window', function ($window) {
         force = d3.layout.force()
           .nodes(data)
           .links(timeframe ? timeframe.links : links)
-          .size([width*.8,height*0.8])
+          .size([width*.8,height*.8])
           .linkStrength(0.1)
           .friction(0.9)
           .linkDistance(200)
-          .charge(-99)
+          .charge(-400)
+          .chargeDistance(150)
           .gravity(0.1)
           .theta(0.8)
           .alpha(0.1)
           .start();
+
+        drag = force.drag().on("dragstart", onDrag);
 
         lines = svg.selectAll('line')
           .data(timeframe ? timeframe.links : links)
@@ -86,7 +89,7 @@ app.directive('d3Svg', ['$window', function ($window) {
           .append('circle')
           .attr('r', sizer)
           .attr('fill', colorizer)
-          .on('dblclick', dblclick)
+          .on('dblclick', onDblclick)
           .call(drag);
 
         nodeCaptions = svg.selectAll('text')
@@ -99,6 +102,7 @@ app.directive('d3Svg', ['$window', function ($window) {
           .text(function(d) {return d.nodeLabel || d.nodeId});
 
         force.on('tick', tick);
+
 
         function tick() {
           lines
@@ -119,6 +123,14 @@ app.directive('d3Svg', ['$window', function ($window) {
             // window.setTimeout(force.stop, 2000);
             onTimeout = true;
           }
+        }
+
+        function onDrag(d) {
+          d3.select(this).classed("fixed", d.fixed = true);
+        }
+
+        function onDblclick(d) {
+          d3.select(this).classed("fixed", d.fixed = false);
         }
 
         function sizer(d, i) {
