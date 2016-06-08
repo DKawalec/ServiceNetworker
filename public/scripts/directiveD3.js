@@ -85,14 +85,17 @@ app.directive('d3Svg', ['$window', function ($window) {
           .data(data).enter()
           .append('circle')
           .attr('r', sizer)
-          .attr('fill', colorizer);
+          .attr('fill', colorizer)
+          .on('dblclick', dblclick)
+          .call(drag);
 
         nodeCaptions = svg.selectAll('text')
           .data(data).enter()
           .append('text')
           .attr('text-anchor', 'middle')
           .attr('font-size', '10px')
-          .attr('fill', '#FFF')
+          .attr('fill', '#000')
+          .attr('stroke', '#FFF')
           .text(function(d) {return d.nodeLabel || d.nodeId});
 
         force.on('tick', tick);
@@ -119,6 +122,8 @@ app.directive('d3Svg', ['$window', function ($window) {
         }
 
         function sizer(d, i) {
+          if (timeframe && !timeframe.nodeWeights[i]) return 20;
+
           var multiplier = timeframe ? 
             timeframe.nodeWeights[i] === 0 ? 0 :
               1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;
@@ -127,7 +132,9 @@ app.directive('d3Svg', ['$window', function ($window) {
         }
 
         function colorizer(d, i) {
-          var color = d3.scale.linear()
+          if (timeframe && !timeframe.nodeWeights[i]) return '#bbb';
+
+          var color = d3.scale.pow()
               .domain([0, 2])
               .range(['#98C4ED', '#0078e7']),
             value = timeframe ? 1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;
