@@ -24,6 +24,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.availableTimeframes = [1, 5, 10, 25, 100, 250];
 
   $scope.availableAlgorithms = null;
+  $scope.repeatComputation = false;
 
   FilesService.getNoSArchive().then(function(response) {
     $scope.availableNoS = response.data.map(function(e) {
@@ -224,8 +225,11 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   };
 
   $scope.runComputation = function() {
-    console.log($scope.dnos)
-    FilesService.predict($scope.algorithmSelection.endpoint, $scope.dnos.currentConnections || {})
+    console.log($scope.dnos, $scope.repeatComputation)
+    if ($scope.repeatComputation) {
+
+    }
+    else FilesService.predict($scope.algorithmSelection.endpoint, $scope.dnos.currentConnections || {})
     .then(function(response) {
       console.log(response);
     }).catch(function(error) {

@@ -72,6 +72,11 @@ block content
           legend Available algorithms:
           .pure-control-group
             select(ng-model='algorithmSelection' ng-options='option.name for option in availableAlgorithms')
+            label.pure-checkbox(for='repeat').
+              #[input(name='repeat' type='checkbox' ng-model='repeatComputation')]
+              On repeat
+          .pure.control-group
+            p.tip "On repeat" will cause the algorithm to run for each timeframe automatically, and return aggregate results.
           .pure-control-group
             button.pure-button.pure-input-2-3.pure-button-primary(type='submit') COMPUTE
     #center.pure-u-3-5
