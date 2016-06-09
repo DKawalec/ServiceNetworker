@@ -1,4 +1,4 @@
-app.controller('NoSViewController', ['$scope', '$document', 'FilesService', function($scope, $document, FilesService) {
+app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService', function($scope, $document, $q, FilesService) {
   $scope.hideForms = false;
   $scope.hideTimeframes = true;
   $scope.hideAlgorithms = true;
@@ -19,6 +19,10 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   };
 
   $scope.stats = {};
+  $scope.results = {
+    timewindows: [],
+    predictions: []
+  };
 
   $scope.numberOfTimeframes = 1;
   $scope.availableTimeframes = [1, 5, 10, 25, 100, 250];
@@ -118,6 +122,7 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
         return e.sources.indexOf(f) !== -1 || e.targets.indexOf(f) !== -1;
       });
     });
+    // error prone
     times = $scope.dnos.connections.map(function(e) {
       return parseInt(e.startTime, 10);
     }),
@@ -140,6 +145,11 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
     $scope.$watch('numberOfTimeframes', function(newVals, oldVals) {
       $scope.stats.timeframeLength = Math.floor($scope.stats.totalTime / newVals);
     }, true);
+  }
+
+  function calculatePredictionStats() {
+    alert('TO DO')
+    console.log($scope.results)
   }
 
   function getDnosTimewindow(start, end) {
@@ -231,7 +241,30 @@ app.controller('NoSViewController', ['$scope', '$document', 'FilesService', func
   $scope.runComputation = function() {
     console.log($scope.dnos, $scope.repeatComputation)
     if ($scope.repeatComputation) {
+      var numOfRuns = $scope.numberOfTimeframes - 1,
+        promises = [], previousWindow = getDnosTimewindow($scope.first, $scope.first + $scope.stats.timeframeLength);
+      $scope.results.timewindows = [previousWindow];
+      $scope.results.predictions = [];      
+      for (var i = 1; i <= numOfRuns; i++) {
+        var windowStart = $scope.first + i*$scope.stats.timeframeLength,
+          windowEnd = windowStart + $scope.stats.timeframeLength,
+          currentWindow = getDnosTimewindow(windowStart, windowEnd),
+          promise;
 
+        promise = FilesService.predict($scope.algorithmSelection.endpoint, previousWindow)
+        .then((function(index) { return function(response) {
+            $scope.results.predictions[index] = response;          
+          }}(i)))
+        .catch(function(error) {
+          console.log(error);
+        });
+        promises.push(promise);
+
+        $scope.results.timewindows[i] = currentWindow;
+        previousWindow = currentWindow;
+      }
+
+      $q.all(promises).then(calculatePredictionStats());
     }
     else FilesService.predict($scope.algorithmSelection.endpoint, $scope.dnos.currentConnections || {})
     .then(function(response) {
