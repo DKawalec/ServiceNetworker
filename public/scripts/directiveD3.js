@@ -35,12 +35,11 @@ app.directive('d3Svg', ['$window', function ($window) {
 
       scope.render = function(data, links, timeframe) {
         svg.selectAll('*').remove();
-        var width = d3.select(element[0]).node().offsetWidth,
-          //TODO: calculate height responsively
-          height = 800,
-          centerPoint = { x: width/2, y: height/2},
-          force, lines, nodes, nodeCaptions, drag,
-          onTimeout = false;
+        var width       = d3.select(element[0]).node().offsetWidth,
+            //TODO: calculate height responsively
+            height      = 800,
+            centerPoint = { x: width/2, y: height/2},
+            force, lines, nodes, nodeCaptions, drag;
 
         svg
           .attr('height', height)
@@ -73,7 +72,7 @@ app.directive('d3Svg', ['$window', function ($window) {
           .alpha(0.1)
           .start();
 
-        drag = force.drag().on("dragstart", onDrag);
+        drag  = force.drag().on("dragstart", onDrag);
 
         lines = svg.selectAll('line')
           .data(timeframe ? timeframe.links : links)
@@ -118,11 +117,6 @@ app.directive('d3Svg', ['$window', function ($window) {
           nodeCaptions
             .attr('x', function(d) { return d.x; })
             .attr('y', function(d) { return d.y; });
-
-          if (!onTimeout) {
-            // window.setTimeout(force.stop, 2000);
-            onTimeout = true;
-          }
         }
 
         function onDrag(d) {
