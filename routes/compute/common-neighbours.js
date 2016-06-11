@@ -12,9 +12,7 @@ router.post('/', jsonParser, function (req, res) {
   for(var i = 0; i < numNodes; i++) {
     for(var j = 0; j < numNodes; j++) if (i !== j ) {
       var commonNeighbours = calc.findCommonNeighbours(data.links, i, j),
-          neighbourWeights = data.linkWeights.filter(function(e, i) {
-            return commonNeighbours.indexOf(i) !== -1;
-          });
+          neighbourWeights = calc.getWeights(commonNeighbours, data.linkWeights);
 
       result.push({source: i, target: j, score: calc.calcPower(commonNeighbours, neighbourWeights)});
     }

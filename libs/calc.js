@@ -5,13 +5,20 @@ module.exports = {
     });
   },
 
-  // returns link indices
+  // returns link indexes
   getNeighbours: function (links, nodeIndex) {
     return links.map(function(e, i) {
       return i;
     }).filter(function (e, i) {
       return links[i].source === nodeIndex || links[i].target === nodeIndex;
     });
+  },
+
+  // links = array of INDEXES
+  getWeights: function(links, weights) {
+    return weights.filter(function(e, i) {
+      return links.indexOf(i) !== -1;
+    })
   },
 
   getCommonPart: function (array1, array2) {
