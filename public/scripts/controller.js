@@ -319,7 +319,6 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
         previousWindow                = currentWindow;
       }
 
-      console.log(promises)
       $q.all(promises).then(calculatePredictionStats);
     }
     else FilesService.predict($scope.algorithmSelection.endpoint, getDnosTimewindow($scope.timeStart, $scope.timeEnd) || {})

@@ -92,7 +92,7 @@ block content
           li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsPrediction}' ng-click='showStats("statsPrediction")')
             a.pure-menu-link Prediction
       div(ng-show='statsNoS')
-        p Load XML with service data to view
+        p.tip Load XML with service data to view
         table.pure-table
           tbody
             tr.pure-table-odd
@@ -117,7 +117,7 @@ block content
               td Connections average
               td {{stats.connectionsAverage || '-'}}
       div(ng-show='statsDNoS')
-        p Load CSV with service usage data to view
+        p.tip Load CSV with service usage data to view
         table.pure-table
           tbody
             tr
@@ -136,7 +136,62 @@ block content
               td Timeframe length
               td {{(stats.timeframeLength || '-') + ' [ms]'}}
       div(ng-show='statsPrediction')
-        p Run algorithm of choice to view
+        p.tip Run algorithm of choice to view
+        h3 Total:
+        table.pure-table
+          tbody
+            tr
+              td Number of predictions
+              td {{stats.accuracy.total.numOfPredictions || '-'}}
+            tr.pure-table-odd
+              td Predicted links
+              td {{stats.accuracy.total.numOfLinks || '-'}}
+            tr
+              td Successful hits
+              td {{stats.accuracy.total.hits || '-'}}
+            tr.pure-table-odd
+              td Hit ratio
+              td {{stats.accuracy.total.hitRatio || '-'}}
+            tr
+              td False positives
+              td {{stats.accuracy.total.falsePositives || '-'}}
+            tr.pure-table-odd
+              td FP ratio
+              td {{stats.accuracy.total.fpRatio || '-'}}
+            tr
+              td False negatives
+              td {{(stats.accuracy.total.falseNegatives || '-')}}
+            tr.pure-table-odd
+              td FN ratio
+              td {{(stats.accuracy.total.fnRatio || '-')}}
+        div(ng-repeat='val in stats.accuracy.detailed')
+          h3(ng-if='!$first') for frame #{{$index}}:
+          table.pure-table(ng-if='!$first')
+            tbody
+              tr
+                td Number of predictions
+                td {{val.numOfPredictions || '-'}}
+              tr.pure-table-odd
+                td Predicted links
+                td {{val.numOfLinks || '-'}}
+              tr
+                td Successful hits
+                td {{val.hits || '-'}}
+              tr.pure-table-odd
+                td Hit ratio
+                td {{val.hitRatio || '-'}}
+              tr
+                td False positives
+                td {{val.falsePositives || '-'}}
+              tr.pure-table-odd
+                td FP ratio
+                td {{val.fpRatio || '-'}}
+              tr
+                td False negatives
+                td {{(val.falseNegatives || '-')}}
+              tr.pure-table-odd
+                td FN ratio
+                td {{(val.fnRatio || '-')}}
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec
