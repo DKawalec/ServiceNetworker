@@ -255,7 +255,7 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
 
         promise = FilesService.predict($scope.algorithmSelection.endpoint, previousWindow)
         .then((function(index) { return function(response) {
-            $scope.results.predictions[index] = response;          
+            $scope.results.predictions[index] = response.data;          
           }}(i)))
         .catch(function(error) {
           console.log(error);
@@ -268,7 +268,7 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
 
       $q.all(promises).then(calculatePredictionStats());
     }
-    else FilesService.predict($scope.algorithmSelection.endpoint, $scope.dnos.currentConnections || {})
+    else FilesService.predict($scope.algorithmSelection.endpoint, getDnosTimewindow($scope.timeStart, $scope.timeEnd) || {})
     .then(function(response) {
       console.log(response);
     }).catch(function(error) {
