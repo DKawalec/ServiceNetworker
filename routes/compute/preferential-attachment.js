@@ -3,11 +3,10 @@ var router     = app.Router();
 var jsonParser = require('body-parser').json();
 var calc       = require('../../libs/calc');
 
-/* GET csv handling site. */
 router.post('/', jsonParser, function (req, res) {
   var data     = req.body,
-  numNodes = data.nodeWeights ? data.nodeWeights.length : 0,
-  result   = [];
+      numNodes = data.nodeWeights ? data.nodeWeights.length : 0,
+      result   = [];
 
   for(var i = 0; i < numNodes; i++) {
     for(var j = 0; j < numNodes; j++) if (i !== j ) {

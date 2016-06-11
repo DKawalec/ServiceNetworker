@@ -3,7 +3,6 @@ var router     = app.Router();
 var jsonParser = require('body-parser').json();
 var calc       = require('../../libs/calc');
 
-/* GET csv handling site. */
 router.post('/', jsonParser, function (req, res) {
   var data     = req.body,
       numNodes = data.nodeWeights ? data.nodeWeights.length : 0,
