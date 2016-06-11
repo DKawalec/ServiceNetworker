@@ -13,7 +13,7 @@ router.post('/', jsonParser, function (req, res) {
       var commonNeighbours = calc.findCommonNeighbours(data.links, i, j),
           neighbourWeights = calc.getWeights(commonNeighbours, data.linkWeights);
 
-      result.push({source: i, target: j, score: calc.calcPower(commonNeighbours, neighbourWeights)});
+      result.push({source: i, target: j, score: calc.calcPower(neighbourWeights)});
     }
   }
 

@@ -14,7 +14,7 @@ router.post('/', jsonParser, function (req, res) {
           neighboursJ = calc.getNeighbours(data.links, j),
           weightsI    = calc.getWeights(neighboursI, data.linkWeights),
           weightsJ    = calc.getWeights(neighboursJ, data.linkWeights),
-          score       = calc.calcPower(neighboursI, weightsI) * calc.calcPower(neighboursJ, weightsJ);
+          score       = calc.calcPower(weightsI) * calc.calcPower(weightsJ);
 
       result.push({source: i, target: j, score: score});
     }

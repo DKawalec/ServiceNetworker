@@ -5,27 +5,34 @@ module.exports = {
     });
   },
 
-  // returns link indexes
+  // returns node indexes
   getNeighbours: function (links, nodeIndex) {
-    return links.map(function(e, i) {
-      return i;
-    }).filter(function (e, i) {
-      return links[i].source === nodeIndex || links[i].target === nodeIndex;
+    return links.filter(function (e, i) {
+      e.index = i;
+      return e.source === nodeIndex || e.target === nodeIndex;
+    }).map(function(e) {
+      return { node: e.source === nodeIndex ? e.target : e.source, index: e.index};
     });
   },
 
   // links = array of INDEXES
   getWeights: function(links, weights) {
     return weights.filter(function(e, i) {
-      return links.indexOf(i) !== -1;
+      return links.some(function(f) {
+        return f.index === i;
+      });
     })
   },
 
   getCommonPart: function (array1, array2) {
     return array1.filter(function (e) {
-      return array2.indexOf(e) !== -1;
+      return array2.some(function(f) {
+        return f.node === e.node;
+      });
     }).concat(array2.filter(function (e) {
-      return array1.indexOf(e) !== -1;
+      return array1.some(function(f) {
+        return f.node === e.node;
+      });
     }));
   },
 
@@ -43,10 +50,10 @@ module.exports = {
     var neighI = this.getNeighbours(links, i),
         neighJ = this.getNeighbours(links, j);
 
-    return this.duplicateRemoval(this.getCommonPart(neighI, neighJ));
+    return this.getCommonPart(neighI, neighJ);
   },
 
-  calcPower: function (links, weights) {
+  calcPower: function (weights) {
     var totalWeight = weights.length ? weights.reduce(function(e, f) {
           return e + f;
         }) : 0, 

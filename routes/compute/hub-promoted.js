@@ -14,12 +14,12 @@ router.post('/', jsonParser, function (req, res) {
           neighboursJ      = calc.getNeighbours(data.links, j),
           weightsI         = calc.getWeights(neighboursI, data.linkWeights),
           weightsJ         = calc.getWeights(neighboursJ, data.linkWeights),
-          powI             = calc.calcPower(neighboursI, weightsI),
-          powJ             = calc.calcPower(neighboursJ, weightsJ),
+          powI             = calc.calcPower(weightsI),
+          powJ             = calc.calcPower(weightsJ),
           commonNeighbours = calc.findCommonNeighbours(data.links, i, j),
           neighbourWeights = calc.getWeights(commonNeighbours, data.linkWeights),
           minimumPower     = Math.min(powI, powJ),
-          score            = minimumPower ? calc.calcPower(commonNeighbours, neighbourWeights) / minimumPower : 0;
+          score            = minimumPower ? calc.calcPower(neighbourWeights) / minimumPower : 0;
 
       result.push({source: i, target: j, score: score});
     }
