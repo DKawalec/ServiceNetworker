@@ -149,8 +149,62 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
   }
 
   function calculatePredictionStats() {
-    alert('TO DO')
-    console.log($scope.results)
+    $scope.stats.accuracy = {
+      total: {},
+      detailed: []
+    };
+    
+    $scope.results.predictions.forEach(function(e, i) {
+      if (i !== 0) {
+        var actualLinks    = $scope.results.timewindows[i].links,
+            predictedLinks = e.filter(function(f) {
+              return f.score > 0;
+            }),
+            predictedVoids = e.filter(function(f) {
+              return f.score === 0;
+            }),
+            results        = {
+              numOfLinks:       predictedLinks.length,
+              numOfVoids:       predictedVoids.length,
+              numOfPredictions: e.length,
+              hits:             0,
+              falsePositives:   0,
+              falseNegatives:   0
+            };
+
+        predictedLinks.forEach(function (l) {
+          if (actualLinks.some(function(f) {
+            return f.source === l.source && f.target === l.target
+          })) results.hits++;
+          else results.falsePositives++;
+        });
+        predictedVoids.forEach(function (l) {
+          if (actualLinks.some(function(f) {
+            return f.source === l.source && f.target === l.target
+          })) results.falseNegatives++;
+        });
+
+        results.hitRatio = results.hits/results.numOfPredictions;
+        results.fpRatio  = results.falsePositives/results.numOfPredictions;
+        results.fnRatio  = results.falseNegatives/results.numOfPredictions;
+        $scope.stats.accuracy.detailed[i] = results;
+      }
+    });
+
+    $scope.stats.accuracy.total = $scope.stats.accuracy.detailed.reduce(function (e, f) {
+      return {
+        numOfLinks:       e.numOfLinks + f.numOfLinks,
+        numOfVoids:       e.numOfVoids + f.numOfVoids,
+        numOfPredictions: e.numOfPredictions + f.numOfPredictions,
+        hits:             e.hits + f.hits,
+        falsePositives:   e.falsePositives + f.falsePositives,
+        falseNegatives:   e.falseNegatives + f.falseNegatives
+      };
+    });
+
+    $scope.stats.accuracy.total.hitRatio = $scope.stats.accuracy.total.hits/$scope.stats.accuracy.total.numOfPredictions;
+    $scope.stats.accuracy.total.fpRatio  = $scope.stats.accuracy.total.falsePositives/$scope.stats.accuracy.total.numOfPredictions;
+    $scope.stats.accuracy.total.fnRatio  = $scope.stats.accuracy.total.falseNegatives/$scope.stats.accuracy.total.numOfPredictions;
   }
 
   function getDnosTimewindow(start, end) {
@@ -240,7 +294,6 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
   };
 
   $scope.runComputation = function() {
-    console.log($scope.dnos, $scope.repeatComputation)
     if ($scope.repeatComputation) {
       var numOfRuns      = $scope.numberOfTimeframes - 1,
           promises       = [],
@@ -253,20 +306,21 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
             currentWindow = getDnosTimewindow(windowStart, windowEnd),
             promise;
 
-        promise = FilesService.predict($scope.algorithmSelection.endpoint, previousWindow)
-        .then((function(index) { return function(response) {
+        promise = FilesService.predict($scope.algorithmSelection.endpoint, previousWindow);
+        promises.push(promise);
+        promise.then((function(index) { return function(response) {
             $scope.results.predictions[index] = response.data;          
           }}(i)))
         .catch(function(error) {
           console.log(error);
         });
-        promises.push(promise);
 
         $scope.results.timewindows[i] = currentWindow;
         previousWindow                = currentWindow;
       }
 
-      $q.all(promises).then(calculatePredictionStats());
+      console.log(promises)
+      $q.all(promises).then(calculatePredictionStats);
     }
     else FilesService.predict($scope.algorithmSelection.endpoint, getDnosTimewindow($scope.timeStart, $scope.timeEnd) || {})
     .then(function(response) {
