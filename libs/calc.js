@@ -5,7 +5,7 @@ module.exports = {
     });
   },
 
-  // returns node indexes
+  // returns node and link indexes
   getNeighbours: function (links, nodeIndex) {
     return links.filter(function (e, i) {
       e.index = i;
@@ -15,7 +15,7 @@ module.exports = {
     });
   },
 
-  // links = array of INDEXES
+  // checking with link indexes
   getWeights: function(links, weights) {
     return weights.filter(function(e, i) {
       return links.some(function(f) {
@@ -51,6 +51,35 @@ module.exports = {
         neighJ = this.getNeighbours(links, j);
 
     return this.getCommonPart(neighI, neighJ);
+  },
+
+  findFarNeighbours: function (links, i, j) {
+    var self = this,
+        commonNeighbours = self.duplicateRemoval(self.findCommonNeighbours(links, i, j).map(function(e) { return e.node })),
+        farNeighbours = [];
+
+    commonNeighbours.forEach(function(e) {
+      farNeighbours.push(self.getNeighbours(links, e));
+    });
+
+    return farNeighbours;
+  },
+
+  // links - array of arrays (see above function)
+  calcFarNeighbourScores: function (links, weights) {
+    var self = this,
+        result = [];
+
+    if (links.length) {
+      links.forEach(function(e) {
+        result.push(self.getWeights(e, weights));
+      });
+
+      return result.map(function (e) {
+        var pow = self.calcPower(e);
+        return pow ? 1 / pow : 0;
+      });
+    } else return false;
   },
 
   calcPower: function (weights) {
