@@ -161,10 +161,10 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
         var actualLinks    = $scope.results.timewindows[i].links,
             treshold       = $scope.acceptanceTreshold || 0,
             predictedLinks = e.filter(function(f) {
-              return f.score >= treshold;
+              return f.score > treshold;
             }),
             predictedVoids = e.filter(function(f) {
-              return f.score < treshold;
+              return f.score <= treshold;
             }),
             results        = {
               numOfLinks:       predictedLinks.length,
