@@ -75,6 +75,9 @@ block content
             label.pure-checkbox(for='repeat').
               #[input(name='repeat' type='checkbox' ng-model='repeatComputation')]
               On repeat
+          .pure-control-group
+            label(for='treshold') Treshold
+            input.pure-input-1-4(name='treshold' type='number' ng-model='acceptanceTreshold' value='0' min='0' max='20' step='0.1')
           .pure.control-group
             p.tip "On repeat" will cause the algorithm to run for each timeframe automatically, and return aggregate results.
           .pure-control-group
@@ -165,7 +168,7 @@ block content
               td FN ratio
               td {{(stats.accuracy.total.fnRatio || '-')}}
         div(ng-repeat='val in stats.accuracy.detailed')
-          h3(ng-if='!$first') for frame #{{$index}}:
+          h3(ng-if='!$first') for frame {{$index}}:
           table.pure-table(ng-if='!$first')
             tbody
               tr

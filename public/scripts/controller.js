@@ -29,6 +29,7 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
 
   $scope.availableAlgorithms = null;
   $scope.repeatComputation   = false;
+  $scope.acceptanceTreshold  = 0;
 
   FilesService.getNoSArchive().then(function(response) {
     $scope.availableNoS = response.data.map(function(e) {
@@ -155,13 +156,15 @@ app.controller('NoSViewController', ['$scope', '$document', '$q', 'FilesService'
     };
     
     $scope.results.predictions.forEach(function(e, i) {
+      console.log($scope.acceptanceTreshold)
       if (i !== 0) {
         var actualLinks    = $scope.results.timewindows[i].links,
+            treshold       = $scope.acceptanceTreshold || 0,
             predictedLinks = e.filter(function(f) {
-              return f.score > 0;
+              return f.score >= treshold;
             }),
             predictedVoids = e.filter(function(f) {
-              return f.score === 0;
+              return f.score < treshold;
             }),
             results        = {
               numOfLinks:       predictedLinks.length,
