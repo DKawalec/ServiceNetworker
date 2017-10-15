@@ -9,7 +9,8 @@ app.directive('d3Svg', ['$window', function ($window) {
     link: function(scope, element, attrs) {  
       var svg = d3.select(element[0])
       .append('svg')
-      .style('width', '100%');
+      .style('width', '100%')
+      .style('height', '100%');
 
       window.onresize = function() {
         scope.$apply();
@@ -34,12 +35,11 @@ app.directive('d3Svg', ['$window', function ($window) {
 
       scope.render = function(data, links, timeframe) {
         svg.selectAll('*').remove();
-        var width = d3.select(element[0]).node().offsetWidth,
-          //TODO: calculate height responsively
-          height = 800,
-          centerPoint = { x: width/2, y: height/2},
-          force, lines, nodes, nodeCaptions,
-          onTimeout = false;
+        var width       = d3.select(element[0]).node().offsetWidth,
+            //TODO: calculate height responsively
+            height      = 800,
+            centerPoint = { x: width/2, y: height/2},
+            force, lines, nodes, nodeCaptions, drag;
 
         svg
           .attr('height', height)
@@ -61,15 +61,18 @@ app.directive('d3Svg', ['$window', function ($window) {
         force = d3.layout.force()
           .nodes(data)
           .links(timeframe ? timeframe.links : links)
-          .size([width*.8,height*0.8])
+          .size([width*.8,height*.8])
           .linkStrength(0.1)
           .friction(0.9)
           .linkDistance(200)
-          .charge(-99)
+          .charge(-400)
+          .chargeDistance(150)
           .gravity(0.1)
           .theta(0.8)
           .alpha(0.1)
           .start();
+
+        drag  = force.drag().on("dragstart", onDrag);
 
         lines = svg.selectAll('line')
           .data(timeframe ? timeframe.links : links)
@@ -84,17 +87,21 @@ app.directive('d3Svg', ['$window', function ($window) {
           .data(data).enter()
           .append('circle')
           .attr('r', sizer)
-          .attr('fill', colorizer);
+          .attr('fill', colorizer)
+          .on('dblclick', onDblclick)
+          .call(drag);
 
         nodeCaptions = svg.selectAll('text')
           .data(data).enter()
           .append('text')
           .attr('text-anchor', 'middle')
           .attr('font-size', '10px')
-          .attr('fill', '#FFF')
-          .text(function(d) {return d.nodeId});
+          .attr('fill', '#000')
+          .attr('stroke', '#FFF')
+          .text(function(d) {return d.nodeLabel || d.nodeId});
 
         force.on('tick', tick);
+
 
         function tick() {
           lines
@@ -110,14 +117,19 @@ app.directive('d3Svg', ['$window', function ($window) {
           nodeCaptions
             .attr('x', function(d) { return d.x; })
             .attr('y', function(d) { return d.y; });
+        }
 
-          if (!onTimeout) {
-            // window.setTimeout(force.stop, 2000);
-            onTimeout = true;
-          }
+        function onDrag(d) {
+          d3.select(this).classed("fixed", d.fixed = true);
+        }
+
+        function onDblclick(d) {
+          d3.select(this).classed("fixed", d.fixed = false);
         }
 
         function sizer(d, i) {
+          if (timeframe && !timeframe.nodeWeights[i]) return 20;
+
           var multiplier = timeframe ? 
             timeframe.nodeWeights[i] === 0 ? 0 :
               1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;
@@ -126,7 +138,9 @@ app.directive('d3Svg', ['$window', function ($window) {
         }
 
         function colorizer(d, i) {
-          var color = d3.scale.linear()
+          if (timeframe && !timeframe.nodeWeights[i]) return '#bbb';
+
+          var color = d3.scale.pow()
               .domain([0, 2])
               .range(['#98C4ED', '#0078e7']),
             value = timeframe ? 1 + (timeframe.nodeWeights[i] / timeframe.totalWeight) : 1;

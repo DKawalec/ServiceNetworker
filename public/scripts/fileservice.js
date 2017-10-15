@@ -1,6 +1,6 @@
 app.service('FilesService', function($http) {
     
-    this.getNoSArchive = function() {
+    this.getNoSArchive  = function() {
       return $http.get('/archive/nos');
     };
 
@@ -8,15 +8,23 @@ app.service('FilesService', function($http) {
       return $http.get('/archive/dnos');
     };
 
-    this.getNoS = function(name) {
+    this.getNoS         = function(name) {
       return $http.get('/archive/nos/' + name);
     };
 
-    this.getDNoS = function(name) {
+    this.getDNoS        = function(name) {
       return $http.get('/archive/dnos/' + name);
     };
 
-    this.uploadXML = function(input) {
+    this.getAlgorithms  = function() {
+      return $http.get('/compute');
+    };
+
+    this.predict        = function(endpoint, data) {
+      return $http.post('/compute' + endpoint, data);
+    };
+
+    this.uploadXML      = function(input) {
       var fd = new FormData();
       for (var i = 0; i < input.files.length; i++) fd.append('xmlFile', input.files[i]);
       delete input.files;
@@ -31,7 +39,7 @@ app.service('FilesService', function($http) {
       });
     };
 
-    this.uploadCSV = function(input) {
+    this.uploadCSV      = function(input) {
       var fd = new FormData();
       for (var i = 0; i < input.files.length; i++) fd.append('csvFile', input.files[i]);
       delete input.files;

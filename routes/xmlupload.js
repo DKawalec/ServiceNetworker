@@ -46,7 +46,7 @@ router.post('/', function (req, res, next) {
 
       q.all(promises).then(function(result) {
         var endResult = flattenJSONs(cleanDataset(aggregateJSONs(result)));
-        if (save.archive && save.archiveName) fs.writeFile('archive\\nos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
+        if (save.archive && save.archiveName) fs.writeFile((process.env.OPENSHIFT_DATA_DIR || 'archive') + '\\nos\\' + save.archiveName + '.json', JSON.stringify(endResult), function(err) {
           res.status(200).json({graph: { nodes: endResult } });
         });
         else res.status(200).json({graph: { nodes: endResult } });

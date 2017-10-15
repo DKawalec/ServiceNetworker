@@ -65,56 +65,136 @@ block content
           .pure.control-group
             p.tip If you're experiencing low performance, try working with shorter timeframes or load smaller datasets.
           .pure-control-group
-            button.pure-button.pure-input-2-3.pure-button-primary(type='button' ng-click='applyTimeframe()') APPLY
+            button.pure-button.pure-input-2-3.pure-button-primary(type='button' ng-click='applyTimeframe()') VIEW
       h3.noselect.active(ng-model='hideAlgorithms' ng-click='hideAlgorithms = !hideAlgorithms') #[img(src='/images/triangle.png' ng-class='{rotate180: !hideAlgorithms, rotate90: hideAlgorithms}')] Algorithm runner
-      p.dynamic(ng-class='{zeroHeight: hideAlgorithms}') Cool stuff happens here... SOON
+      form.miniform.pure-form.pure-form-aligned.dynamic(data-ng-submit='runComputation()' ng-class='{zeroHeight: hideAlgorithms}')
+        fieldset
+          legend Available algorithms:
+          .pure-control-group
+            select(ng-model='algorithmSelection' ng-options='option.name for option in availableAlgorithms')
+            label.pure-checkbox(for='repeat').
+              #[input(name='repeat' type='checkbox' ng-model='repeatComputation')]
+              On repeat
+          .pure-control-group
+            label(for='treshold') Treshold
+            input.pure-input-1-4(name='treshold' type='number' ng-model='acceptanceTreshold' value='0' min='0' max='20' step='0.1')
+          .pure.control-group
+            p.tip "On repeat" will cause the algorithm to run for each timeframe automatically, and return aggregate results.
+          .pure-control-group
+            button.pure-button.pure-input-2-3.pure-button-primary(type='submit') COMPUTE
     #center.pure-u-3-5
       d3-svg(data='nos.graph.nodes', link='nos.graph.connections', timeframe='dnos.currentConnections')
     #right.pure-u-1-5.panel
-      h3 NoS statistics
-      p Load XML with service data to view
-      table.pure-table
-        tbody
-          tr.pure-table-odd
-            td Number of services
-            td {{stats.numberOfServices || '-'}}
-          tr
-            td Total inputs
-            td {{stats.inputsTotal || '-'}}
-          tr.pure-table-odd
-            td Inputs average
-            td {{stats.inputsAverage || '-'}}
-          tr
-            td Total outputs
-            td {{stats.outputsTotal || '-'}}
-          tr.pure-table-odd
-            td Outputs average
-            td {{stats.outputsAverage || '-'}}
-          tr
-            td Total connections
-            td {{stats.connectionsTotal || '-'}}
-          tr.pure-table-odd
-            td Connections average
-            td {{stats.connectionsAverage || '-'}}
-      h3 DNoS statistics
-      p Load CSV with service usage data to view
-      table.pure-table
-        tbody
-          tr
-            td Number of calls
-            td {{stats.totalCalls || '-'}}
-          tr.pure-table-odd
-            td Calls to this repository
-            td {{stats.repositoryCalls || '-'}}
-          tr
-            td Usable data percentage
-            td {{stats.usableData || '-'}}
-          tr.pure-table-odd
-            td Total recorded time
-            td {{(stats.totalTime || '-') + ' [ms]'}}
-          tr
-            td Timeframe length
-            td {{(stats.timeframeLength || '-') + ' [ms]'}}
+      h3 View statistics
+      .pure-menu.pure-menu-horizontal
+        ul.pure-menu-list
+          li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsNoS}' ng-click='showStats("statsNoS")')
+            a.pure-menu-link NoS
+          li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsDNoS}' ng-click='showStats("statsDNoS")')
+            a.pure-menu-link DNoS
+          li.active.pure-menu-item(ng-class='{"pure-menu-selected": statsPrediction}' ng-click='showStats("statsPrediction")')
+            a.pure-menu-link Prediction
+      div(ng-show='statsNoS')
+        p.tip Load XML with service data to view
+        table.pure-table
+          tbody
+            tr.pure-table-odd
+              td Number of services
+              td {{stats.numberOfServices || '-'}}
+            tr
+              td Total inputs
+              td {{stats.inputsTotal || '-'}}
+            tr.pure-table-odd
+              td Inputs average
+              td {{stats.inputsAverage || '-'}}
+            tr
+              td Total outputs
+              td {{stats.outputsTotal || '-'}}
+            tr.pure-table-odd
+              td Outputs average
+              td {{stats.outputsAverage || '-'}}
+            tr
+              td Total connections
+              td {{stats.connectionsTotal || '-'}}
+            tr.pure-table-odd
+              td Connections average
+              td {{stats.connectionsAverage || '-'}}
+      div(ng-show='statsDNoS')
+        p.tip Load CSV with service usage data to view
+        table.pure-table
+          tbody
+            tr
+              td Number of calls
+              td {{stats.totalCalls || '-'}}
+            tr.pure-table-odd
+              td Calls to this repository
+              td {{stats.repositoryCalls || '-'}}
+            tr
+              td Usable data percentage
+              td {{stats.usableData || '-'}}
+            tr.pure-table-odd
+              td Total recorded time
+              td {{(stats.totalTime || '-') + ' [ms]'}}
+            tr
+              td Timeframe length
+              td {{(stats.timeframeLength || '-') + ' [ms]'}}
+      div(ng-show='statsPrediction')
+        p.tip Run algorithm of choice to view
+        h3 Total:
+        table.pure-table
+          tbody
+            tr
+              td Number of predictions
+              td {{stats.accuracy.total.numOfPredictions || '-'}}
+            tr.pure-table-odd
+              td Predicted links
+              td {{stats.accuracy.total.numOfLinks || '-'}}
+            tr
+              td Successful hits
+              td {{stats.accuracy.total.hits || '-'}}
+            tr.pure-table-odd
+              td Hit ratio
+              td {{stats.accuracy.total.hitRatio || '-'}}
+            tr
+              td False positives
+              td {{stats.accuracy.total.falsePositives || '-'}}
+            tr.pure-table-odd
+              td FP ratio
+              td {{stats.accuracy.total.fpRatio || '-'}}
+            tr
+              td False negatives
+              td {{(stats.accuracy.total.falseNegatives || '-')}}
+            tr.pure-table-odd
+              td FN ratio
+              td {{(stats.accuracy.total.fnRatio || '-')}}
+        div(ng-repeat='val in stats.accuracy.detailed')
+          h3(ng-if='!$first') for frame {{$index}}:
+          table.pure-table(ng-if='!$first')
+            tbody
+              tr
+                td Number of predictions
+                td {{val.numOfPredictions || '-'}}
+              tr.pure-table-odd
+                td Predicted links
+                td {{val.numOfLinks || '-'}}
+              tr
+                td Successful hits
+                td {{val.hits || '-'}}
+              tr.pure-table-odd
+                td Hit ratio
+                td {{val.hitRatio || '-'}}
+              tr
+                td False positives
+                td {{val.falsePositives || '-'}}
+              tr.pure-table-odd
+                td FP ratio
+                td {{val.fpRatio || '-'}}
+              tr
+                td False negatives
+                td {{(val.falseNegatives || '-')}}
+              tr.pure-table-odd
+                td FN ratio
+                td {{(val.fnRatio || '-')}}
     footer.pure-u-1-1.center
       p.
         (c) 2015-2016 Dorota Kawalec

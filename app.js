@@ -7,11 +7,14 @@ var favicon      = require('serve-favicon');
 var logger       = require('morgan');
 var bodyParser   = require('body-parser');
 var multer       = require('multer');
+var fs           = require('fs');
 
 var routes       = require('./routes/index');
 var csvupload    = require('./routes/csvupload');
 var xmlupload    = require('./routes/xmlupload');
 var archive      = require('./routes/archive');
+
+var compute      = require('./routes/compute');
 
 var app = express();
 
@@ -33,6 +36,8 @@ app.use('/csvupload', csvupload);
 app.use('/xmlupload', xmlupload);
 app.use('/archive', archive);
 
+app.use('/compute', compute);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -40,8 +45,19 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handlers
+// setup directory structure
+// this is ugly but w/e
+var dir = process.env.OPENSHIFT_DATA_DIR;
+if (dir) {
+  if (!fs.existsSync(dir + '\\nos')){
+    fs.mkdirSync(dir + '\\nos');
+  }
+  if (!fs.existsSync(dir + '\\dnos')){
+    fs.mkdirSync(dir + '\\dnos');
+  }
+}
 
+// error handlers
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
